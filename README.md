@@ -32,3 +32,5 @@ For now you can only customise the printed table via the *./libary/view.css* fil
 ## Licence
 ![Creative Commons Attribution 4.0 International License](https://i.creativecommons.org/l/by/4.0/88x31.png "Creative Commons Licence")  
 This work is licensed under a [Creative Commons Attribution 4.0 International License]("http://creativecommons.org/licenses/by/4.0/")
+
+#### Note: The Steam Market History Exported is a community project and is not affiliated with Valve or Steam.
