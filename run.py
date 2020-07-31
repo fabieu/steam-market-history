@@ -1,10 +1,7 @@
-import steam.webauth as wa #pip install steam
-from bs4 import BeautifulSoup #pip install beautifulsoup4
-import pandas as pd #pip install pandas
-import json
-import math
 import sys
 import subprocess
+import json
+import math
 import csv
 import webbrowser
 import time
@@ -15,9 +12,16 @@ def install(package):
     subprocess.check_call([sys.executable, "-m", "pip", "install", package])
 
 print("Installing required dependencies ...")
-install("beautifulsoup4")
-install("steam")
-install("pandas")
+try:
+    install("beautifulsoup4")
+    install("steam")
+    install("pandas")
+except:
+    print("Required Modules can not be installed. Make sure you have pip installed!")
+else:
+    import steam.webauth as wa #pip install steam
+    from bs4 import BeautifulSoup #pip install beautifulsoup4
+    import pandas as pd #pip install pandas
 
 #Initialize data object for storing the fetched data from Steam
 data = ""
