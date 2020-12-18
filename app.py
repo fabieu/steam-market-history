@@ -6,22 +6,9 @@ import csv
 import webbrowser
 import time
 from datetime import datetime
-
-# Check if required Pythons modules are installed, if not install them via pip
-def install(package):
-    subprocess.check_call([sys.executable, "-m", "pip", "install", package])
-
-print("Installing required dependencies ...")
-try:
-    install("beautifulsoup4")
-    install("steam")
-    install("pandas")
-except:
-    print("Required Modules can not be installed. Make sure you have pip installed!")
-else:
-    import steam.webauth as wa #pip install steam
-    from bs4 import BeautifulSoup #pip install beautifulsoup4
-    import pandas as pd #pip install pandas
+import steam.webauth as wa
+from bs4 import BeautifulSoup
+import pandas as pd
 
 #Initialize data object for storing the fetched data from Steam
 data = ""
@@ -47,13 +34,13 @@ except:
     print("Unexpected error:", sys.exc_info()[0])
     raise
 
-#Manipulating data from the response with the BeautifulSoup Libary and save it in CSV-Format
+#Manipulating data from the response with the BeautifulSoup library and save it in CSV-Format
 print("Creating CSV-File ...")
 with open('data.csv', 'w', newline='',encoding="utf-8") as file:
     writer = csv.writer(file)
     writer.writerows([["Gain or loss","Date", "Item Name", "Game Name", "Price €"]])
     
-    #Pulling data out of HTML Response with the BeautifulSoup Libary
+    #Pulling data out of HTML Response with the BeautifulSoup library
     soup = BeautifulSoup(data, 'html.parser')
     market_listing_rows = soup.find_all("div",class_="market_listing_row")
 
@@ -86,14 +73,14 @@ htmlTable = df.to_html(na_rep='-', justify='center',table_id='data')
 with open('view.html', 'w',encoding="utf-8") as file:
     file.write(" \
         <head> \
-        <link rel='stylesheet' type='text/css' href='libary/view.css'> \
-        <script src='libary/tablefilter/tablefilter.js'></script> \
+        <link rel='stylesheet' type='text/css' href='library/view.css'> \
+        <script src='library/tablefilter/tablefilter.js'></script> \
         <title>Market History: " + datetime.now().strftime("%d.%m.%Y - %H:%M") + "</title> \
         </head> \
     ")
     file.write(htmlTable)
     file.write("<div id='loader'></div>")
-    file.write("<script src='libary/tablefilter/config.js'></script>")
+    file.write("<script src='library/tablefilter/config.js'></script>")
 
 #Opening default web browser to view the html file
 print("Opening default web browser to view the results ...")
