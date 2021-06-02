@@ -19,6 +19,6 @@ six==1.15.0
 soupsieve==2.0.1
 steam==1.0.2
 toml==0.10.2
-urllib3==1.26.4
+urllib3==1.26.5
 vdf==3.3
 wrapt==1.12.1
