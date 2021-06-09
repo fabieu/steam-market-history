@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+
+    <head>
+        <meta charset="utf-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
+        <meta name="description" content="" />
+        <meta name="author" content="" />
+        <title>Steam Market History</title>
+        <!-- Favicon-->
+        <link rel="icon" type="image/x-icon" href="assets/img/favicon.ico" />
+        <!-- Core theme CSS (includes Bootstrap)-->
+        <link href="assets/css/styles.css" rel="stylesheet" />
+    </head>
+
+    <body>
+        <!-- Responsive navbar-->
+        <nav class="navbar sticky-top navbar-expand-lg navbar-dark bg-dark">
+            <div class="container">
+                <a class="navbar-brand" href="./">Steam Market History</a>
+                <button class="navbar-toggler" type="button" data-bs-toggle="collapse"
+                    data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent"
+                    aria-expanded="false" aria-label="Toggle navigation"><span
+                        class="navbar-toggler-icon"></span></button>
+            </div>
+        </nav>
+        <!-- Page content-->
+        <div class="container">
+            <div class="text-center mt-5">
+                <h1>Steam Market History ({{current_date}})</h1>
+
+                <p class="lead mb-4">Searchable and filterable table to inspect your steam market history in detail</p>
+
+                <div class="summary row justify-content-evenly">
+                    <div class="col-3"><span>Total transactions:</span> {{ summary.totalTransactions }}</div>
+                </div>
+
+                <table class="table table-striped" id="steam-table">
+                    <thead class="table-dark">
+                        <tr>
+                            <th scope="col"></th>
+                            <th scope="col">Bought or Sold</th>
+                            <th scope="col">Game</th>
+                            <th scope="col">Item</th>
+                            <th scope="col">Date listed</th>
+                            <th scope="col">Price</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for item in transactions %}
+                        <tr>
+                            <td><img src="{{ item.image_url }}"></td>
+                            {% if item.gainorloss == '+'%}
+                            <td class="item-bought">Bought</td>
+                            {% elif item.gainorloss == '-'%}
+                            <td class="item-sold">Sold</td>
+                            {% endif %}
+                            <td>{{ item.game_name }}</td>
+                            <td>{{ item.item_name }}</td>
+                            <td>{{ item.listed_date }}</td>
+                            <td>{{ item.price }}</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- CDN JS-->
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.1/dist/js/bootstrap.bundle.min.js"></script>
+        <script src="https://cdn.jsdelivr.net/npm/jquery@3/dist/jquery.min.js"></script>
+
+        <!-- JQuery Plugins-->
+        <script src="assets/js/search-table.js"></script>
+
+        <!-- Core theme JS-->
+        <script src="assets/js/scripts.js"></script>
+    </body>
+
+</html>
