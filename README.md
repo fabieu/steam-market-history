@@ -1,42 +1,61 @@
 # Steam Market History Exporter
 
-The Steam Market History Exporter is a command line tool written completly in Python which allows you to extract your entire Steam Market History with all transaction (sales/purchases) in a reusable csv file. In addition a html file is generated automatically to view your transactions directly in the web browser.
+The Steam Market History Exporter is a command line tool written completly in Python which allows you to extract your entire Steam Market History with all transaction (sales/purchases) either in a reusable csv file, a styled and searchable HTML-File or both.
+
+![Demo](./docs/demo.gif)
 
 ## Features
 
 - Extract your **entire** Steam Market History
-- Creation of a .csv file with all transactions
-- Overview of all transactions represented user friendly in your web browser
-- Filtering of transcations via price, name and/or date of sale respectivly purchase
-- (_Soon:_ Automatic calculation of the sum of the prices for the transactions selected)
+- Create a CSV-File with all transactions
+- Overview of _all_ transactions on a user-friendly webpage
+- Search _all_ transactions based on multiple values
+
+&nbsp;
 
 ## Requirements
 
-- **Python 3.X:**
+- **Python >= 3.7.X:**
   - [Download Python](https://www.python.org/downloads/)
-- **pip - The Python Package Installer:** (pip is already installed if you are using Python 3 >=3.4 downloaded from python.org)
-  - Otherwise you can install pip by using the following [instructions](https://pip.pypa.io/en/stable/installing/)
+- **Pipenv: Python Development Workflow for Humans:**
+  - `pip install pipenv --user`
+
+&nbsp;
 
 ## Installation
 
-Navigate to the cloned repo and run the following command to install all required dependencies:
-
-If you dont want to install the packages in your main package repository you can use a virtual environment. For more instructions visit the official Python documentation.
+Clone this repo and navigate to its root direcory
 
 ```bash
-pip install -r requirements.txt
+git clone https://github.com/fabieu/steam-market-history-exporter.git && cd ./steam-market-history-exporter
 ```
 
-### Usage:
+Run the following command to install all required dependencies:
 
-1. Start the tool by double-clicking the _app.<span></span>py_ file
-2. A command prompt should open which will guide you through the sequence of steps neccessary to fetch your data from Steam and convert the data into the appropriate files.
-3. After the tool is finished it will close itself and open a browser window for you to view your transactions
+```bash
+pipenv install
+```
 
-## Configuration
+&nbsp;
 
-Currently there are not many configuration options available.
-For now you can only customize the printed table via the _./libary/view.css_ file. The table has the attribut _id="data"_
+## Usage:
+
+Run the tool by executing the following command in the root directory 
+  ```bash
+  pipenv run python generate.py {Options}
+  ```
+
+  Options: 
+  > These options can be used alone or simultaneously seperated by space
+
+  - **html** - Generate HTML representation of your transactions and open it in your default browser
+  - **csv** - Generate a CSV-File containing all your transactions
+
+
+
+_When running the tool you will be prompted to insert your steam credentials. You can safely do this because all processing is done on your own computer. You can check this by looking at the public available source code._
+
+&nbsp;
 
 ## Licence
 
@@ -49,4 +68,6 @@ The above copyright notice and this permission notice shall be included in all c
 
 The software is provided “as is”, without warranty of any kind, express or implied, including but not limited to the warranties of merchantability, fitness for a particular purpose and noninfringement. In no event shall the authors or copyright holders be liable for any claim, damages or other liability, whether in an action of contract, tort or otherwise, arising from, out of or in connection with the software or the use or other dealings in the software.
 
-#### Note: The Steam Market History Exported is a community project and is not affiliated with Valve or Steam.
+&nbsp;
+
+### Note: The Steam Market History Exported is a community project and is not affiliated with Valve or Steam.

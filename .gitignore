@@ -1,6 +1,8 @@
 #Custom
-data.*
-view.html
+.vscode/
+*.pkl
+content.csv
+market-history.html
 
 # Byte-compiled / optimized / DLL files
 __pycache__/
