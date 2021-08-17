@@ -48,8 +48,8 @@ Run the tool by executing the following command in the root directory
   Options: 
   > These options can be used alone or simultaneously seperated by space
 
-  - **html** - Generate HTML representation of your transactions and open it in your default browser
-  - **csv** - Generate a CSV-File containing all your transactions
+  - **html** - Generate HTML representation of your transactions in the root folder and open it in your default browser
+  - **csv** - Generate a CSV-File containing all your transactions in the data folder
 
 
 
