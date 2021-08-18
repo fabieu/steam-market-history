@@ -9,7 +9,6 @@ steam = "*"
 jinja2 = "*"
 
 [dev-packages]
-pylint = "*"
 autopep8 = "*"
 
 [requires]
