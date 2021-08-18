@@ -40,18 +40,18 @@ pipenv install
 
 ## Usage:
 
-Run the tool by executing the following command in the root directory 
-  ```bash
-  pipenv run python generate.py {Options}
-  ```
+Run the tool by executing the following command in the root directory
 
-  Options: 
-  > These options can be used alone or simultaneously seperated by space
+```bash
+pipenv run python generate.py {Options}
+```
 
-  - **html** - Generate HTML representation of your transactions and open it in your default browser
-  - **csv** - Generate a CSV-File containing all your transactions
+Options:
 
+> These options can be used alone or simultaneously seperated by space
 
+- **html** - Generate HTML representation of your transactions in the ./data folder and open it in your default browser
+- **csv** - Generate a CSV-File containing all your transactions in the root folder
 
 _When running the tool you will be prompted to insert your steam credentials. You can safely do this because all processing is done on your own computer. You can check this by looking at the public available source code._
 

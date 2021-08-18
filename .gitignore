@@ -1,7 +1,7 @@
 #Custom
 .vscode/
 *.pkl
-content.csv
+data/
 market-history.html
 
 # Byte-compiled / optimized / DLL files
