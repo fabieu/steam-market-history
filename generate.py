@@ -21,12 +21,16 @@ logging.basicConfig(
     format='%(asctime)s %(levelname)s %(message)s'
 )
 
-DEV_MODE = False
+# Configuration
+DEBUG = False
+data_path = './data'
+
+# Global variables
 market_transactions = None
 
-if DEV_MODE:
+if DEBUG:
     try:
-        with open('./data/market_transactions.pkl', 'rb') as temp_file:
+        with open('market_transactions.pkl', 'rb') as temp_file:
             market_transactions = pickle.load(temp_file)
     except FileNotFoundError:
         pass
@@ -91,7 +95,7 @@ def fetch_market_history():
         if (re.search(r"^\d{1,2} \w{3}$", market_listing_listed_date)):
             market_listing_listed_date = datetime \
                 .strptime(f"2020 {market_listing_listed_date}", "%Y %d %b") \
-                .strftime("%d. %B")
+                .strftime("%d.%m")
 
         # Format original steam data (market_listing_row) and add it to an additional array (market_transactions)
         if market_listing_gainorloss in ["+", "-"]:
@@ -104,8 +108,8 @@ def fetch_market_history():
                 "image_url": market_listing_item_img,
             })
 
-    if DEV_MODE:
-        with open('./data/market_transactions.pkl', 'wb') as temp_file:
+    if DEBUG:
+        with open('market_transactions.pkl', 'wb') as temp_file:
             pickle.dump(market_transactions, temp_file)
 
     return market_transactions
@@ -116,11 +120,15 @@ def generate_csv():
     if market_transactions is None:
         market_transactions = fetch_market_history()
 
+    # Create output directory if it doesn't exist
+    if not os.path.exists(data_path):
+        os.mkdir(data_path)
+
     # Save the market listings to a CSV-File
     if (len(market_transactions) > 0):
         logging.info("Creating CSV-File ...")
-        with open('./data/content.csv', 'w', newline='', encoding="utf-8") as file:
-            writer = csv.writer(file)
+        with open(f'{data_path}/market-history.csv', 'w', newline='', encoding="utf-8") as file:
+            writer = csv.writer(file, delimiter=',')
             writer.writerow(market_transactions[0].keys())
             writer.writerows([x.values() for x in market_transactions])
             logging.info(f"CSV-File created successfully: {os.path.realpath(file.name)}")
