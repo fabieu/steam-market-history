@@ -11,20 +11,14 @@ The Steam Market History Exporter is a command line tool written completly in Py
 - Overview of _all_ transactions on a user-friendly webpage
 - Search _all_ transactions based on multiple values
 
-&nbsp;
-
 ## Requirements
 
-- **Python >= 3.7.X:**
-  - [Download Python](https://www.python.org/downloads/)
-- **Pipenv: Python Development Workflow for Humans:**
-  - `pip install pipenv --user`
-
-&nbsp;
+- Python >= 3.6
+- Pipenv: Python Development Workflow for Humans
 
 ## Installation
 
-Clone this repo and navigate to its root direcory
+Clone this repo and navigate to its root direcory:
 
 ```bash
 git clone https://github.com/fabieu/steam-market-history-exporter.git && cd ./steam-market-history-exporter
@@ -33,34 +27,31 @@ git clone https://github.com/fabieu/steam-market-history-exporter.git && cd ./st
 Run the following command to install all required dependencies:
 
 ```bash
-pipenv install
+pipenv install && pipenv shell
 ```
-
-&nbsp;
 
 ## Usage:
 
-Run the tool by executing the following command in the root directory
+Run the tool by executing the following command:
 
 ```bash
 pipenv run python generate.py {Options}
 ```
 
-Options:
+### Options:
 
-> These options can be used alone or simultaneously seperated by space
+For all available options check the cli command `pipenv run python generate.py --help`
 
-- **html** - Generate HTML representation of your transactions in the ./data folder and open it in your default browser
-- **csv** - Generate a CSV-File containing all your transactions in the root folder
+- `--html` (Conditional (Required if `--csv` is not set): Generate HTML representation of your transactions in the `--target` folder (defaults to `./data`) and open it in your default browser
+- `--csv` (Conditional (Required if `--html` is not set): Generate a CSV-File containing all your transactions in the root folder
+- `--target` (Optional): Relative path based on script location for generated files (only .csv-files at the moment)
 
 _When running the tool you will be prompted to insert your steam credentials. You can safely do this because all processing is done on your own computer. You can check this by looking at the public available source code._
-
-&nbsp;
 
 ## Licence
 
 The MIT License (MIT)  
-Copyright &copy; 2020 Fabian Eulitz
+Copyright &copy; 2020-2021 Fabian Eulitz
 
 Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the “Software”), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:
 
@@ -70,4 +61,6 @@ The software is provided “as is”, without warranty of any kind, express or i
 
 &nbsp;
 
-### Note: The Steam Market History Exported is a community project and is not affiliated with Valve or Steam.
+## Disclaimer:
+
+**The Steam Market History Exported is a community project and is not affiliated with Valve or Steam.**

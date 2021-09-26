@@ -1,3 +1,4 @@
+# Build-in modules
 import sys
 import logging
 import json
@@ -7,11 +8,15 @@ import re
 import os
 from decimal import Decimal
 import pickle
-import webbrowser
 from datetime import datetime
+
+# Pipenv modules
+import webbrowser
 import steam.webauth as wa
 from bs4 import BeautifulSoup
 from jinja2 import Template
+import typer
+from typer.params import Option
 
 # Logging configuration
 logging.basicConfig(
@@ -21,14 +26,14 @@ logging.basicConfig(
     format='%(asctime)s %(levelname)s %(message)s'
 )
 
-# Configuration
-DEBUG = False
-data_path = './data'
+# Global variables
+TARGET = None
+CACHE = None
 
 # Global variables
 market_transactions = None
 
-if DEBUG:
+if CACHE:
     try:
         with open('market_transactions.pkl', 'rb') as temp_file:
             market_transactions = pickle.load(temp_file)
@@ -71,8 +76,8 @@ def fetch_market_history():
             content += json.loads(steam_session.get(url).content)["results_html"]
         logging.info("Fetching Data from Steam successful")
     except:
-        logging.error("Unexpected error: " + sys.exc_info()[0])
-        raise
+        logging.exception("Unexpected error")
+        raise SystemExit()
 
     # Pulling content out of theHTML Response with the BeautifulSoup library
     DOMdocument = BeautifulSoup(content, 'html.parser')
@@ -108,7 +113,7 @@ def fetch_market_history():
                 "image_url": market_listing_item_img,
             })
 
-    if DEBUG:
+    if CACHE:
         with open('market_transactions.pkl', 'wb') as temp_file:
             pickle.dump(market_transactions, temp_file)
 
@@ -121,13 +126,13 @@ def generate_csv():
         market_transactions = fetch_market_history()
 
     # Create output directory if it doesn't exist
-    if not os.path.exists(data_path):
-        os.mkdir(data_path)
+    if not os.path.exists(TARGET):
+        os.mkdir(TARGET)
 
     # Save the market listings to a CSV-File
     if (len(market_transactions) > 0):
         logging.info("Creating CSV-File ...")
-        with open(f'{data_path}/market-history.csv', 'w', newline='', encoding="utf-8") as file:
+        with open(f'{TARGET}/market-history.csv', 'w', newline='', encoding="utf-8") as file:
             writer = csv.writer(file, delimiter=',')
             writer.writerow(market_transactions[0].keys())
             writer.writerows([x.values() for x in market_transactions])
@@ -157,15 +162,26 @@ def generate_html():
         logging.warning("Steam Market History is empty!")
 
 
-if __name__ == "__main__":
-    try:
-        args = sys.argv[1:]
-        if len(args) == 0:
-            raise SystemExit(f"Usage: {sys.argv[0]} csv OR {sys.argv[0]} html")
+def main(
+    csv_enable: bool = typer.Option(False, "--csv", help="Generate steam market history as csv file"),
+    html_enable: bool = typer.Option(False, "--html", help="Generate steam market history as interactive website"),
+    target: str = typer.Option('./data', help="Relative path based on script location for generated files"),
+    cache: bool = typer.Option(False, help="Cache steam credentials. Use with caution!")
+):
+    # Set global variables
+    global CACHE, TARGET
+    CACHE = cache
+    TARGET = target
 
-        if "html" in args:
-            generate_html()
-        if "csv" in args:
-            generate_csv()
-    except KeyboardInterrupt:
-        pass
+    if csv_enable:
+        generate_csv()
+
+    if html_enable:
+        generate_html()
+
+    if not any([csv_enable, html_enable]):
+        logging.warning("Please provide at least one option! For more information call 'generate.py --help'")
+
+
+if __name__ == "__main__":
+    typer.run(main)
