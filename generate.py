@@ -73,7 +73,7 @@ def fetch_market_history():
         for i in range(query_count):
             url = f'https://steamcommunity.com/market/myhistory/render/?count=500&start={str(i * 500)}'
             logging.info(f"({str(i+1)}) HTTP GET: {url}")
-            content += json.loads(steam_session.get(url).content)["results_html"]
+            content += json.loads((steam_session.get(url).content).decode("utf-8-sig"))["results_html"]
         logging.info("Fetching Data from Steam successful")
     except:
         logging.exception("Unexpected error")
