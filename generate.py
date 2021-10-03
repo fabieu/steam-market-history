@@ -14,9 +14,8 @@ from datetime import datetime
 import webbrowser
 import steam.webauth as wa
 from bs4 import BeautifulSoup
-from jinja2 import Template
+from jinja2 import Template, select_autoescape
 import typer
-from typer.params import Option
 
 # Logging configuration
 logging.basicConfig(
@@ -146,7 +145,7 @@ def generate_html():
 
     if (len(market_transactions) > 0):
         with open('./templates/index.html', encoding="utf-8") as template_file:
-            template = Template(template_file.read())
+            template = Template(template_file.read(), autoescape=select_autoescape())
 
         with open('market-history.html', 'w', encoding="utf-8") as rendered_file:
             current_date = datetime.now().strftime("%d.%m.%Y %H:%M:%S")
