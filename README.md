@@ -1,66 +1,228 @@
-# Steam Market History Exporter
+<div id="top"></div>
 
-The Steam Market History Exporter is a command line tool written completly in Python which allows you to extract your entire Steam Market History with all transaction (sales/purchases) either in a reusable csv file, a styled and searchable HTML-File or both.
+<!-- PROJECT SHIELDS -->
 
-![Demo](./docs/demo.gif)
+[![Contributors][contributors-shield]][contributors-url]
+[![Forks][forks-shield]][forks-url]
+[![Stargazers][stars-shield]][stars-url]
+[![Issues][issues-shield]][issues-url]
+[![MIT License][license-shield]][license-url]
 
-## Features
+<!-- PROJECT LOGO -->
+<br />
+<div align="center">
+  <a href="https://github.com/fabieu/steam-market-history">
+    <img src="https://raw.githubusercontent.com/fabieu/steam-market-history/main/docs/images/logo.svg" alt="Logo" width="120" height="120">
+  </a>
+
+<h3 align="center">steam-market-history</h3>
+
+  <p align="center">
+    An easy-to-use CLI to export your steam market history to various formats
+    <br />
+    <a href="https://raw.githubusercontent.com/fabieu/steam-market-history/main/docs/demo.gif">View Demo</a>
+    ·
+    <a href="https://github.com/fabieu/steam-market-history/issues">Report Bug</a>
+    ·
+    <a href="https://github.com/fabieu/steam-market-history/issues">Request Feature</a>
+  </p>
+</div>
+
+<!-- TABLE OF CONTENTS -->
+<details>
+  <summary>Table of Contents</summary>
+  <ol>
+    <li>
+      <a href="#about-the-project">About The Project</a>
+      <ul>
+        <li><a href="#built-with">Built With</a></li>
+      </ul>
+    </li>
+    <li>
+      <a href="#getting-started">Getting Started</a>
+      <ul>
+        <li><a href="#prerequisites">Prerequisites</a></li>
+        <li><a href="#installation">Installation</a></li>
+      </ul>
+    </li>
+    <li><a href="#usage">Usage</a></li>
+    <li><a href="#roadmap">Roadmap</a></li>
+    <li><a href="#contributing">Contributing</a></li>
+    <li><a href="#license">License</a></li>
+    <li><a href="#contact">Contact</a></li>
+    <li><a href="#acknowledgments">Acknowledgments</a></li>
+  </ol>
+</details>
+
+<!-- ABOUT THE PROJECT -->
+
+## About The Project
+
+steam-market-history is a command line tool written in Python which allows you to extract your entire Steam Market History with all transaction (sales/purchases) in a CSV or HTML file.
+
+### Key features
 
 - Extract your **entire** Steam Market History
 - Create a CSV-File with all transactions
-- Overview of _all_ transactions on a user-friendly webpage
-- Search _all_ transactions based on multiple values
+- Overview of _all_ transactions on a user-friendly webpage with searchable and filterable results
 
-## Requirements
+### Built With
 
-- Python >= 3.6
-- Pipenv: Python Development Workflow for Humans
+- [Python](https://www.python.org/)
+- [Typer](https://typer.tiangolo.com/)
 
-## Installation
+<p align="right">(<a href="#top">back to top</a>)</p>
 
-Clone this repo and navigate to its root direcory:
+<!-- GETTING STARTED -->
 
-```bash
-git clone https://github.com/fabieu/steam-market-history-exporter.git && cd ./steam-market-history-exporter
+## Getting Started
+
+To get a local copy up and running follow these simple example steps.
+
+### Prerequisites
+
+- Python >= 3.8
+
+### Installation
+
+Pip (recommended):
+
+```python
+pip install steam-market-history
 ```
 
-Run the following command to install all required dependencies:
+Manual:
 
-```bash
-pipenv install && pipenv shell
+1. Clone the repo
+   ```sh
+   git clone https://github.com/fabieu/steam-market-history.git
+   ```
+2. Install poetry (if not already installled)
+   ```sh
+   pip install poetry
+   ```
+3. Install dependencies and start virtual environment
+   ```sh
+   poetry install && poetry shell
+   ```
+4. Start virtual environment
+   ```sh
+   poetry shell
+   ```
+
+<p align="right">(<a href="#top">back to top</a>)</p>
+
+<!-- USAGE EXAMPLES -->
+
+## Usage
+
+Currently the following commands are supported:
+
+### `export`
+
+Export your steam market history to a CSV or HTML file
+
+> When running the tool you will be prompted to insert your steam credentials. All processing is done locally on your own computer. This package does not save your credentials in any way.
+
+Options:
+
+- `--csv` - Export to csv file
+- `--html` - Export to html file
+- `--path` - Output directory for all file based operations (default: current working directory)
+- `--launch` / `--no-launch` - Automatically open file(s) after export (default: `--launch`)
+- `--cache` / `--no-cache` - Create a file cache for all market transactions (default: `--no-cache`)
+- `--interactive` / `--non-interactive` - Interactive or non-interactive steam authentication [default: `--interactive`]
+
+Example:
+
+```
+steam-market-history export --csv --path /tmp/out
 ```
 
-## Usage:
+### `version`
 
-Run the tool by executing the following command:
+Display detailed information about this package
 
-```bash
-pipenv run python generate.py {Options}
+```
+steam-market-history version
 ```
 
-### Options:
+<p align="right">(<a href="#top">back to top</a>)</p>
 
-For all available options check the cli command `pipenv run python generate.py --help`
+<!-- ROADMAP -->
 
-- `--html` (Conditional (Required if `--csv` is not set): Generate HTML representation of your transactions in the `--target` folder (defaults to `./data`) and open it in your default browser
-- `--csv` (Conditional (Required if `--html` is not set): Generate a CSV-File containing all your transactions in the root folder
-- `--target` (Optional): Relative path based on script location for generated files (only .csv-files at the moment)
+## Roadmap
 
-_When running the tool you will be prompted to insert your steam credentials. You can safely do this because all processing is done on your own computer. You can check this by looking at the public available source code._
+- [ ] Add options of verbosity
+- [ ] Export to JSON
 
-## Licence
+See the [open issues](https://github.com/fabieu/steam-market-history/issues) for a full list of proposed features (and known issues).
 
-The MIT License (MIT)  
-Copyright &copy; 2020-2021 Fabian Eulitz
+<p align="right">(<a href="#top">back to top</a>)</p>
 
-Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the “Software”), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:
+<!-- CONTRIBUTING -->
 
-The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
+## Contributing
 
-The software is provided “as is”, without warranty of any kind, express or implied, including but not limited to the warranties of merchantability, fitness for a particular purpose and noninfringement. In no event shall the authors or copyright holders be liable for any claim, damages or other liability, whether in an action of contract, tort or otherwise, arising from, out of or in connection with the software or the use or other dealings in the software.
+Contributions are what make the open source community such an amazing place to learn, inspire, and create. Any contributions you make are **greatly appreciated**.
 
-&nbsp;
+If you have a suggestion that would make this better, please fork the repo and create a pull request. You can also simply open an issue with the tag "enhancement".
+Don't forget to give the project a star! Thanks again!
+
+1. Fork the Project
+2. Create your Feature Branch (`git checkout -b feature/AmazingFeature`)
+3. Commit your Changes (`git commit -m 'Add some AmazingFeature'`)
+4. Push to the Branch (`git push origin feature/AmazingFeature`)
+5. Open a Pull Request
+
+<p align="right">(<a href="#top">back to top</a>)</p>
+
+<!-- LICENSE -->
+
+## License
+
+Distributed under the MIT License. See `LICENSE` for more information.
+
+<p align="right">(<a href="#top">back to top</a>)</p>
+
+<!-- CONTACT -->
+
+## Contact
+
+sustineo\_ - [@sustineo\_](https://twitter.com/sustineo_) - dev@sustineo.de
+
+Project Link: [https://github.com/fabieu/steam-market-history](https://github.com/fabieu/steam-market-history)
+
+<p align="right">(<a href="#top">back to top</a>)</p>
+
+<!-- ACKNOWLEDGMENTS -->
+
+## Acknowledgments
+
+- [Typer](https://typer.tiangolo.com/)
+- [Choose a license](https://choosealicense.com/)
+
+<p align="right">(<a href="#top">back to top</a>)</p>
 
 ## Disclaimer:
 
-**The Steam Market History Exported is a community project and is not affiliated with Valve or Steam.**
+The Steam Market History Exported is a community project and is not affiliated with Valve or Steam.
+
+<p align="right">(<a href="#top">back to top</a>)</p>
+
+<!-- MARKDOWN LINKS & IMAGES -->
+<!-- https://www.markdownguide.org/basic-syntax/#reference-style-links -->
+
+[contributors-shield]: https://img.shields.io/github/contributors/fabieu/steam-market-history.svg?style=for-the-badge
+[contributors-url]: https://github.com/fabieu/steam-market-history/graphs/contributors
+[forks-shield]: https://img.shields.io/github/forks/fabieu/steam-market-history.svg?style=for-the-badge
+[forks-url]: https://github.com/fabieu/steam-market-history/network/members
+[stars-shield]: https://img.shields.io/github/stars/fabieu/steam-market-history.svg?style=for-the-badge
+[stars-url]: https://github.com/fabieu/steam-market-history/stargazers
+[issues-shield]: https://img.shields.io/github/issues/fabieu/steam-market-history.svg?style=for-the-badge
+[issues-url]: https://github.com/fabieu/steam-market-history/issues
+[license-shield]: https://img.shields.io/github/license/fabieu/steam-market-history.svg?style=for-the-badge
+[license-url]: https://github.com/fabieu/steam-market-history/blob/master/LICENSE.txt
+[linkedin-shield]: https://img.shields.io/badge/-LinkedIn-black.svg?style=for-the-badge&logo=linkedin&colorB=555
+[linkedin-url]: https://linkedin.com/in/linkedin_username
+[product-screenshot]: images/screenshot.png
