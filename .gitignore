@@ -1,8 +1,7 @@
 #Custom
 .vscode/
 *.pkl
-data/
-market-history.html
+market-history.*
 
 # Byte-compiled / optimized / DLL files
 __pycache__/

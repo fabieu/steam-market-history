@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
+    <meta name="description" content="" />
+    <meta name="author" content="" />
+    <title>Steam Market History Export</title>
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5/dist/css/bootstrap.min.css"
+    />
+
+    <!-- Core theme CSS -->
+    <style>
+      #steam-table thead th {
+        vertical-align: middle;
+      }
+
+      #steam-table tbody td {
+        vertical-align: middle;
+      }
+
+      .summary {
+        margin-bottom: 1rem;
+      }
+
+      .summary h1 {
+        font-size: 1.5em;
+      }
+
+      .summary div span {
+        font-weight: bold;
+      }
+
+      .item-bought {
+        font-weight: bold;
+        color: red;
+      }
+
+      .item-sold {
+        font-weight: bold;
+        color: green;
+      }
+
+      .form-control {
+        margin-bottom: 5px;
+      }
+
+      .form-control:focus {
+        border: 1px solid #ced4da;
+        border-bottom: 3px solid #212529;
+      }
+    </style>
+  </head>
+
+  <body>
+    <!-- Responsive navbar-->
+    <nav class="navbar sticky-top navbar-expand-lg navbar-dark bg-dark">
+      <div class="container">
+        <a class="navbar-brand" href="./">Steam Market History - {{current_date}}</a>
+        <button
+          class="navbar-toggler"
+          type="button"
+          data-bs-toggle="collapse"
+          data-bs-target="#navbarSupportedContent"
+          aria-controls="navbarSupportedContent"
+          aria-expanded="false"
+          aria-label="Toggle navigation"
+        >
+          <span class="navbar-toggler-icon"></span>
+        </button>
+      </div>
+    </nav>
+    <!-- Page content-->
+    <div class="container">
+      <div class="text-center mt-5">
+        <h1>Steam Market History Export</h1>
+
+        <p class="lead mb-4">Search and filter data in your steam market history</p>
+
+        <div class="summary row justify-content-evenly">
+          <div class="col-3"><span>Total transactions:</span> {{ summary.totalTransactions }}</div>
+        </div>
+
+        <table class="table" id="steam-table">
+          <thead class="table-dark">
+            <tr>
+              <th scope="col"></th>
+              <th scope="col">Item</th>
+              <th scope="col">Game</th>
+              <th scope="col">Date listed</th>
+              <th scope="col">Transaction</th>
+              <th scope="col">Price</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for item in transactions %}
+            <tr>
+              <td><img src="{{ item.image_url }}" /></td>
+              <td>{{ item.item_name }}</td>
+              <td>{{ item.game_name }}</td>
+              <td>{{ item.listed_date }}</td>
+              {% if item.gainorloss == '+'%}
+              <td class="item-bought">purchased</td>
+              {% elif item.gainorloss == '-'%}
+              <td class="item-sold">sold</td>
+              {% endif %}
+              <td>
+                {% if item.gainorloss == '+'%} -{{ item.price }} {% elif item.gainorloss == '-'%}
+                +{{ item.price }} {% endif %}
+              </td>
+            </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- CDN JS-->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5/dist/js/bootstrap.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/jquery@3/dist/jquery.min.js"></script>
+
+    <!-- JQuery Plugins-->
+    <script>
+      (function ($) {
+        "use strict";
+
+        function delay(callback, ms) {
+          var timer = 0;
+          return function () {
+            var context = this,
+              args = arguments;
+            clearTimeout(timer);
+            timer = setTimeout(function () {
+              callback.apply(context, args);
+            }, ms || 0);
+          };
+        }
+
+        function setUpOptions(options) {
+          const placeholderConst = "Enter a search term";
+          var defaultOptions = options || {
+            placeholder: placeholderConst,
+            filterTrClass: "",
+          };
+          if (defaultOptions.placeholder === undefined)
+            defaultOptions.placeholder = placeholderConst;
+          if (defaultOptions.filterTrClass === undefined) defaultOptions.filterTrClass = "";
+          return defaultOptions;
+        }
+        var searchTable = function (table, options) {
+          this.setUp = function () {
+            var defaultOptions = setUpOptions(options);
+            var inputSearch = $("<input>", {
+              type: "text",
+              class: "form-control shadow-none",
+              placeholder: defaultOptions.placeholder,
+            });
+            var spanSearch = $("<span>", {
+              class: "add-on",
+            }).append(
+              $("<i>", {
+                class: "icon icon-search",
+              })
+            );
+            var divSearch = $("<div>", {
+              class: "row-fluid input-append",
+            });
+            divSearch.append(inputSearch).append(spanSearch);
+            $(table).before(divSearch);
+            var $rows = $(table).find("tbody tr" + defaultOptions.filterTrClass);
+
+            inputSearch.keyup(
+              delay(function (e) {
+                if (typeof defaultOptions.before === "function") defaultOptions.before();
+                var val = "^(?=.*" + $.trim($(this).val()).split(/\s+/).join(")(?=.*") + ").*$",
+                  reg = RegExp(val, "i"),
+                  text;
+                $rows
+                  .show()
+                  .filter(function () {
+                    text = $(this).text().replace(/\s+/g, " ");
+                    return !reg.test(text);
+                  })
+                  .hide();
+              }, 500)
+            );
+          };
+        };
+        $.fn.searchTable = function (options) {
+          var st = new searchTable(this, options);
+          st.setUp();
+        };
+      })(jQuery);
+    </script>
+
+    <!-- Core theme JS-->
+    <script>
+      $("#steam-table").searchTable({
+        placeholder: "Search entire table...",
+      });
+    </script>
+  </body>
+</html>
