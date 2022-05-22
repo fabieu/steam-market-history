@@ -15,8 +15,8 @@ def steam_auth_cli():
     return steam.webauth.WebAuth(username).cli_login()
 
 
-def steam_auth(username: str, password: str, twofactor_code: str):
+def steam_auth(username: str, password: str, email_code: str, twofactor_code: str):
     """
     Login to Steam with username and password and return the authenticated websession
     """
-    return steam.webauth.WebAuth(username).login(password, twofactor_code=twofactor_code)
+    return steam.webauth.WebAuth(username).login(pasword=password, email_code=email_code, twofactor_code=twofactor_code)

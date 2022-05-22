@@ -1,6 +1,7 @@
 # Build-in modules
 import json
 import re
+import os
 
 # PyPi modules
 from bs4 import BeautifulSoup
@@ -20,7 +21,12 @@ def fetch_market_history(interactive: bool) -> list:
     if interactive:
         steam_session = auth.steam_auth_cli()
     elif not interactive:
-        steam_session = auth.steam_auth()
+        username = os.getenv("STEAM_USERNAME")
+        password = os.getenv("STEAM_PASSWORD")
+        email_code = os.getenv("STEAM_EMAIL_CODE")
+        twofactor_code = os.getenv("STEAM_TWOFACTOR_CODE")
+        steam_session = auth.steam_auth(username=username, password=password,
+                                        email_code=email_code, twofactor_code=twofactor_code)
 
     # Initialize content objects for storing the market history from Steam
     content = ""

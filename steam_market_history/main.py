@@ -48,7 +48,7 @@ def export(
                 with open(cache_path, 'wb') as f:
                     pickle.dump(market_transactions, f)
         else:
-            market_transactions = steam.fetch_market_history(non_interactive=interactive)
+            market_transactions = steam.fetch_market_history(interactive=interactive)
     else:
         typer.echo("Please provide at least one option! For more information use 'steam-market-history export --help'", err=True)
 
