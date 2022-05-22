@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "steam-market-history"
-version = "3.0.0"
+version = "3.0.1"
 description = "An easy-to-use CLI to export your steam market history to various formats"
 authors = ["Fabian Eulitz <dev@sustineo.de>"]
 license = "MIT"
@@ -19,6 +19,7 @@ typer = "^0.4.1"
 pytest = "^7.1.2"
 autopep8 = "^1.6.0"
 vermin = "^1.3.3"
+python-dotenv = "^0.20.0"
 
 [tool.poetry.scripts]
 steam-market-history = "steam_market_history.main:app"
