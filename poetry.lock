@@ -329,7 +329,7 @@ python-versions = "*"
 
 [[package]]
 name = "vermin"
-version = "1.3.3"
+version = "1.4.0"
 description = "Concurrently detect the minimum Python versions needed to run code"
 category = "dev"
 optional = false
@@ -338,7 +338,7 @@ python-versions = ">=2.7"
 [metadata]
 lock-version = "1.1"
 python-versions = "^3.8"
-content-hash = "7074ea8b2c212e126c3d014aae648c56899cd50504b5b43d69364cbf775b1efb"
+content-hash = "7fcb5553130b6327175ffc2d341271d32af667ee0f39311c0f63eb962d485980"
 
 [metadata.files]
 atomicwrites = [
@@ -524,5 +524,5 @@ vdf = [
     {file = "vdf-3.4.tar.gz", hash = "sha256:fd5419f41e07a1009e5ffd027c7dcbe43d1f7e8ef453aeaa90d9d04b807de2af"},
 ]
 vermin = [
-    {file = "vermin-1.3.3-py2.py3-none-any.whl", hash = "sha256:c5bd8bf2026d87563332293a0479606954bd973d8cf72ab370e1164a019c0524"},
+    {file = "vermin-1.4.0-py2.py3-none-any.whl", hash = "sha256:0370f562cfa004a234c2ca33cff3c187fe05741c1c36570ef27a514ad9b7e202"},
 ]
