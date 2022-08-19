@@ -1,5 +1,10 @@
 <div id="top"></div>
 
+# This project has been moved to GitLab and is now read-only
+https://gitlab.com/fabieu-ci/steam-market-history
+
+&nbsp;
+
 <!-- PROJECT SHIELDS -->
 
 [![Contributors][contributors-shield]][contributors-url]
