@@ -13,7 +13,8 @@ variables:
 default:
   before_script:
     - pip install poetry
-  image: python:3.10.7
+    - poetry install
+  image: python:3.10.6
   tags:
     - gitlab-org-docker
   cache:
@@ -31,10 +32,11 @@ test-job:
       - report.xml
     reports:
       junit: report.xml
+    expire_in: 1 week
 
 publish-job:
   stage: publish
   script:
     - echo "Publishing application..."
-    - poetry publish --build --no-interaction --username __token__ --password $pypi_token
+    - poetry publish --build --no-interaction --username __token__ --password $PYPI_TOKEN
     - echo "Application successfully published."
