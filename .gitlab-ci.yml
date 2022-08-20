@@ -20,7 +20,7 @@ default:
     paths:
       - .cache/pip
 
-prepare environment:
+prepare-environment:
   stage: prepare
   needs: []
   before_script:
@@ -52,7 +52,7 @@ test-job:
 
 publish-job:
   stage: publish
-  needs: [test-job]
+  needs: ["test-job"]
   before_script:
     - pip install poetry
     - poetry install
@@ -63,7 +63,7 @@ publish-job:
 
 create release:
   stage: release
-  needs: [publish-job]
+  needs: ["prepare-environment", "publish-job"]
   image: registry.gitlab.com/gitlab-org/release-cli:latest
   script:
     - echo 'Creating release for version $VERSION'
