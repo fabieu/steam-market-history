@@ -2,17 +2,18 @@
 
 <!-- PROJECT SHIELDS -->
 
-[![Contributors][contributors-shield]][contributors-url]
-[![Forks][forks-shield]][forks-url]
-[![Stargazers][stars-shield]][stars-url]
-[![Issues][issues-shield]][issues-url]
-[![MIT License][license-shield]][license-url]
+![PyPI](https://img.shields.io/pypi/v/steam-market-history?style=for-the-badge)
+![PyPI - Python Version](https://img.shields.io/pypi/pyversions/steam-market-history?style=for-the-badge)
+![Gitlab pipeline status](https://img.shields.io/gitlab/pipeline-status/fabieu-ci/steam-market-history?style=for-the-badge)
+![GitLab issues](https://img.shields.io/gitlab/issues/open/fabieu-ci/steam-market-history?style=for-the-badge)
+![GitLab merge requests](https://img.shields.io/gitlab/merge-requests/open-raw/fabieu-ci/steam-market-history?style=for-the-badge)
+![GitLab](https://img.shields.io/gitlab/license/fabieu-ci/steam-market-history?style=for-the-badge)
 
 <!-- PROJECT LOGO -->
 <br />
 <div align="center">
-  <a href="https://github.com/fabieu/steam-market-history">
-    <img src="https://raw.githubusercontent.com/fabieu/steam-market-history/main/docs/images/logo.svg" alt="Logo" width="120" height="120">
+  <a href="https://gitlab.com/fabieu-ci/steam-market-history">
+    <img src="https://gitlab.com/fabieu-ci/steam-market-history/-/raw/main/docs/images/logo.svg" alt="Logo" width="120" height="120">
   </a>
 
 <h3 align="center">steam-market-history</h3>
@@ -20,11 +21,11 @@
   <p align="center">
     An easy-to-use CLI to export your steam market history to various formats
     <br />
-    <a href="https://raw.githubusercontent.com/fabieu/steam-market-history/main/docs/demo.gif">View Demo</a>
+    <a href="https://gitlab.com/fabieu-ci/steam-market-history/-/raw/main/docs/demo.gif">View Demo</a>
     ·
-    <a href="https://github.com/fabieu/steam-market-history/issues">Report Bug</a>
+    <a href="https://gitlab.com/fabieu-ci/steam-market-history/-/issues">Report Bug</a>
     ·
-    <a href="https://github.com/fabieu/steam-market-history/issues">Request Feature</a>
+    <a href="https://gitlab.com/fabieu-ci/steam-market-history/-/issues">Request Feature</a>
   </p>
 </div>
 
@@ -95,7 +96,7 @@ Manual:
 
 1. Clone the repo
    ```sh
-   git clone https://github.com/fabieu/steam-market-history.git
+   git clone https://gitlab.com/fabieu-ci/steam-market-history.git
    ```
 2. Install poetry (if not already installled)
    ```sh
@@ -156,7 +157,7 @@ steam-market-history version
 - [ ] Add options of verbosity
 - [ ] Export to JSON
 
-See the [open issues](https://github.com/fabieu/steam-market-history/issues) for a full list of proposed features (and known issues).
+See the [open issues](https://gitlab.com/fabieu-ci/steam-market-history/-/issues) for a full list of proposed features (and known issues).
 
 <p align="right">(<a href="#top">back to top</a>)</p>
 
@@ -191,8 +192,6 @@ Distributed under the MIT License. See `LICENSE` for more information.
 
 sustineo\_ - [@sustineo\_](https://twitter.com/sustineo_) - dev@sustineo.de
 
-Project Link: [https://github.com/fabieu/steam-market-history](https://github.com/fabieu/steam-market-history)
-
 <p align="right">(<a href="#top">back to top</a>)</p>
 
 <!-- ACKNOWLEDGMENTS -->
@@ -209,20 +208,3 @@ Project Link: [https://github.com/fabieu/steam-market-history](https://github.co
 The Steam Market History Exported is a community project and is not affiliated with Valve or Steam.
 
 <p align="right">(<a href="#top">back to top</a>)</p>
-
-<!-- MARKDOWN LINKS & IMAGES -->
-<!-- https://www.markdownguide.org/basic-syntax/#reference-style-links -->
-
-[contributors-shield]: https://img.shields.io/github/contributors/fabieu/steam-market-history.svg?style=for-the-badge
-[contributors-url]: https://github.com/fabieu/steam-market-history/graphs/contributors
-[forks-shield]: https://img.shields.io/github/forks/fabieu/steam-market-history.svg?style=for-the-badge
-[forks-url]: https://github.com/fabieu/steam-market-history/network/members
-[stars-shield]: https://img.shields.io/github/stars/fabieu/steam-market-history.svg?style=for-the-badge
-[stars-url]: https://github.com/fabieu/steam-market-history/stargazers
-[issues-shield]: https://img.shields.io/github/issues/fabieu/steam-market-history.svg?style=for-the-badge
-[issues-url]: https://github.com/fabieu/steam-market-history/issues
-[license-shield]: https://img.shields.io/github/license/fabieu/steam-market-history.svg?style=for-the-badge
-[license-url]: https://github.com/fabieu/steam-market-history/blob/master/LICENSE.txt
-[linkedin-shield]: https://img.shields.io/badge/-LinkedIn-black.svg?style=for-the-badge&logo=linkedin&colorB=555
-[linkedin-url]: https://linkedin.com/in/linkedin_username
-[product-screenshot]: images/screenshot.png
