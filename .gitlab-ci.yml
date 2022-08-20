@@ -1,0 +1,40 @@
+workflow:
+  rules:
+    - if: '$CI_PIPELINE_SOURCE == "web" || $CI_PIPELINE_SOURCE == "api"'
+    - if: '$CI_PIPELINE_SOURCE == "push" && $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH'
+
+stages:
+  - test
+  - publish
+
+variables:
+  PIP_CACHE_DIR: "$CI_PROJECT_DIR/.cache/pip"
+
+default:
+  before_script:
+    - pip install poetry
+  image: python:3.10.7
+  tags:
+    - gitlab-org-docker
+  cache:
+    paths:
+      - .cache/pip
+
+test-job:
+  stage: test
+  script:
+    - echo "Running unit tests..."
+    - poetry run pytest --junitxml="report.xml"
+  artifacts:
+    when: always
+    paths:
+      - report.xml
+    reports:
+      junit: report.xml
+
+publish-job:
+  stage: publish
+  script:
+    - echo "Publishing application..."
+    - poetry publish --build --no-interaction --username __token__ --password $pypi_token
+    - echo "Application successfully published."
