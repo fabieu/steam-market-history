@@ -12,7 +12,7 @@ stages:
 variables:
   PIP_CACHE_DIR: "$CI_PROJECT_DIR/.cache/pip"
 
-default:
+default:1
   image: python:3.10.6-slim
   tags:
     - gitlab-org-docker
@@ -34,7 +34,7 @@ prepare environment:
 
 test-job:
   stage: test
-    before_script:
+  before_script:
     - pip install poetry
     - poetry install
   script:
