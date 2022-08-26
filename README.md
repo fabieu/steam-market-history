@@ -4,16 +4,16 @@
 
 ![PyPI](https://img.shields.io/pypi/v/steam-market-history?style=for-the-badge)
 ![PyPI - Python Version](https://img.shields.io/pypi/pyversions/steam-market-history?style=for-the-badge)
-![Gitlab pipeline status](https://img.shields.io/gitlab/pipeline-status/fabieu-ci/steam-market-history?style=for-the-badge)
-![GitLab issues](https://img.shields.io/gitlab/issues/open/fabieu-ci/steam-market-history?style=for-the-badge)
-![GitLab merge requests](https://img.shields.io/gitlab/merge-requests/open-raw/fabieu-ci/steam-market-history?style=for-the-badge)
-![GitLab](https://img.shields.io/gitlab/license/fabieu-ci/steam-market-history?style=for-the-badge)
+![Gitlab pipeline status](https://img.shields.io/gitlab/pipeline-status/sustineo/steam-market-history?style=for-the-badge)
+![GitLab issues](https://img.shields.io/gitlab/issues/open/sustineo/steam-market-history?style=for-the-badge)
+![GitLab merge requests](https://img.shields.io/gitlab/merge-requests/open-raw/sustineo/steam-market-history?style=for-the-badge)
+![GitLab](https://img.shields.io/gitlab/license/sustineo/steam-market-history?style=for-the-badge)
 
 <!-- PROJECT LOGO -->
 <br />
 <div align="center">
-  <a href="https://gitlab.com/fabieu-ci/steam-market-history">
-    <img src="https://gitlab.com/fabieu-ci/steam-market-history/-/raw/main/docs/images/logo.svg" alt="Logo" width="120" height="120">
+  <a href="https://gitlab.com/sustineo/steam-market-history">
+    <img src="https://gitlab.com/sustineo/steam-market-history/-/raw/main/docs/images/logo.svg" alt="Logo" width="120" height="120">
   </a>
 
 <h3 align="center">steam-market-history</h3>
@@ -21,11 +21,11 @@
   <p align="center">
     An easy-to-use CLI to export your steam market history to various formats
     <br />
-    <a href="https://gitlab.com/fabieu-ci/steam-market-history/-/raw/main/docs/demo.gif">View Demo</a>
+    <a href="https://gitlab.com/sustineo/steam-market-history/-/raw/main/docs/demo.gif">View Demo</a>
     ·
-    <a href="https://gitlab.com/fabieu-ci/steam-market-history/-/issues">Report Bug</a>
+    <a href="https://gitlab.com/sustineo/steam-market-history/-/issues">Report Bug</a>
     ·
-    <a href="https://gitlab.com/fabieu-ci/steam-market-history/-/issues">Request Feature</a>
+    <a href="https://gitlab.com/sustineo/steam-market-history/-/issues">Request Feature</a>
   </p>
 </div>
 
@@ -96,7 +96,7 @@ Manual:
 
 1. Clone the repo
    ```sh
-   git clone https://gitlab.com/fabieu-ci/steam-market-history.git
+   git clone https://gitlab.com/sustineo/steam-market-history.git
    ```
 2. Install poetry (if not already installled)
    ```sh
@@ -157,7 +157,7 @@ steam-market-history version
 - [ ] Add options of verbosity
 - [ ] Export to JSON
 
-See the [open issues](https://gitlab.com/fabieu-ci/steam-market-history/-/issues) for a full list of proposed features (and known issues).
+See the [open issues](https://gitlab.com/sustineo/steam-market-history/-/issues) for a full list of proposed features (and known issues).
 
 <p align="right">(<a href="#top">back to top</a>)</p>
 
