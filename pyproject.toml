@@ -19,7 +19,7 @@ typer = "^0.4.1"
 pytest = "^7.1.2"
 autopep8 = "^1.6.0"
 vermin = "^1.3.3"
-python-dotenv = "^0.20.0"
+python-dotenv = "^0.21.0"
 
 [tool.poetry.scripts]
 steam-market-history = "steam_market_history.main:app"
