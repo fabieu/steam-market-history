@@ -55,27 +55,33 @@ def fetch_market_history(interactive: bool) -> list:
     market_listing_rows = DOMdocument.find_all("div", class_="market_listing_row")
 
     for row in market_listing_rows:
-        market_listing_price = row.find("span", class_="market_listing_price").text.strip()
-        market_listing_item_name = row.find("span", class_="market_listing_item_name").text.strip()
-        market_listing_game_name = row.find("span", class_="market_listing_game_name").text.strip()
-        market_listing_gainorloss = row.find("div", class_="market_listing_gainorloss").text.strip()
-        market_listing_listed_date = row.find("div", class_="market_listing_listed_date").text.strip()
-        market_listing_item_img = row.find("img", class_="market_listing_item_img")["src"]
+        price_element = row.find("span", class_="market_listing_price")
+        item_name_element = row.find("span", class_="market_listing_item_name")
+        game_name_element = row.find("span", class_="market_listing_game_name")
+        gainorloss_element = row.find("div", class_="market_listing_gainorloss")
+        listed_date_element = row.find("div", class_="market_listing_listed_date")
+        item_img_element = row.find("img", class_="market_listing_item_img")
+
+        price = price_element.text.strip() if price_element else None
+        item_name = item_name_element.text.strip() if item_name_element else None
+        game_name = game_name_element.text.strip() if game_name_element else None
+        gainorloss = gainorloss_element.text.strip() if gainorloss_element else None
+        listed_date = listed_date_element.text.strip() if listed_date_element else None
+        image_url = item_img_element.get("src") if item_img_element else None
 
         # Format data
-        if (re.search(r"^\d+,(\d|-){2}$", market_listing_price)):
-            market_listing_price = market_listing_price.replace(
-                ",--", ".00").replace(",", ".")
+        if (re.search(r"^\d+,(\d|-){2}$", price)):
+            price = price.replace(",--", ".00").replace(",", ".")
 
         # Format original steam data (market_listing_row) and add it to an array
-        if market_listing_gainorloss in ["+", "-"]:
+        if gainorloss in ["+", "-"]:
             market_transactions.append({
-                "game_name": market_listing_game_name,
-                "item_name": market_listing_item_name,
-                "listed_date": market_listing_listed_date,
-                "price": market_listing_price,
-                "gainorloss": market_listing_gainorloss,
-                "image_url": market_listing_item_img,
+                "game_name": game_name,
+                "item_name": item_name,
+                "listed_date": listed_date,
+                "price": price,
+                "gainorloss": gainorloss,
+                "image_url": image_url,
             })
 
     return market_transactions
