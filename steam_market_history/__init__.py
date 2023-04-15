@@ -1,8 +1,9 @@
 # Built-in modules
-import importlib.metadata
+from importlib.metadata import version, metadata
 
 # PyPi modules
 
 # Local modules
 
-__version__ = importlib.metadata.version("steam-market-history")
+__version__ = version("steam-market-history")
+__metadata__ = metadata("steam-market-history")

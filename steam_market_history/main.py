@@ -6,7 +6,7 @@ import pickle
 import typer
 
 # Local modules
-from steam_market_history import __version__
+from steam_market_history import __version__, __metadata__
 from steam_market_history.modules import steam, generator
 
 # Initialize Typer and populate commands
@@ -18,7 +18,10 @@ def version():
     """
     Display detailed information about this package
     """
-    typer.echo(f"steam-market-history v{__version__}")
+    typer.echo(f"steam-market-history")
+    typer.echo(f"Version: {__version__}")
+    typer.echo(f"Author: {__metadata__.get('Author')}")
+    typer.echo(f"License: {__metadata__.get('License')}")
 
 
 @app.command()
