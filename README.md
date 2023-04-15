@@ -2,12 +2,12 @@
 
 <!-- PROJECT SHIELDS -->
 
-![PyPI](https://img.shields.io/pypi/v/steam-market-history?style=for-the-badge)
-![PyPI - Python Version](https://img.shields.io/pypi/pyversions/steam-market-history?style=for-the-badge)
-![Gitlab pipeline status](https://img.shields.io/gitlab/pipeline-status/sustineo/steam-market-history?style=for-the-badge)
-![GitLab issues](https://img.shields.io/gitlab/issues/open/sustineo/steam-market-history?style=for-the-badge)
-![GitLab merge requests](https://img.shields.io/gitlab/merge-requests/open-raw/sustineo/steam-market-history?style=for-the-badge)
-![GitLab](https://img.shields.io/gitlab/license/sustineo/steam-market-history?style=for-the-badge)
+[![PyPI](https://img.shields.io/pypi/v/steam-market-history?style=for-the-badge)](https://pypi.org/project/steam-market-history/)
+[![PyPI - Python Version](https://img.shields.io/pypi/pyversions/steam-market-history?style=for-the-badge)](https://pypi.org/project/steam-market-history/)
+[![Gitlab pipeline status](https://img.shields.io/gitlab/pipeline-status/sustineo/steam-market-history?style=for-the-badge)](https://gitlab.com/sustineo/steam-market-history/-/pipelines)
+[![GitLab issues](https://img.shields.io/gitlab/issues/open/sustineo/steam-market-history?style=for-the-badge)](https://gitlab.com/sustineo/steam-market-history/-/issues)
+[![GitLab merge requests](https://img.shields.io/gitlab/merge-requests/open-raw/sustineo/steam-market-history?style=for-the-badge)](https://gitlab.com/sustineo/steam-market-history/-/merge_requests)
+[![GitLab](https://img.shields.io/gitlab/license/sustineo/steam-market-history?style=for-the-badge)](https://gitlab.com/sustineo/steam-market-history/-/blob/main/LICENSE)
 
 <!-- PROJECT LOGO -->
 <br />
@@ -98,17 +98,13 @@ Manual:
    ```sh
    git clone https://gitlab.com/sustineo/steam-market-history.git
    ```
-2. Install poetry (if not already installled)
+2. Install poetry (if not already installed)
    ```sh
    pip install poetry
    ```
 3. Install dependencies and start virtual environment
    ```sh
    poetry install && poetry shell
-   ```
-4. Start virtual environment
-   ```sh
-   poetry shell
    ```
 
 <p align="right">(<a href="#top">back to top</a>)</p>
@@ -117,13 +113,13 @@ Manual:
 
 ## Usage
 
-Currently the following commands are supported:
+Currently, the following commands are supported:
 
 ### `export`
 
 Export your steam market history to a CSV or HTML file
 
-> When running the tool you will be prompted to insert your steam credentials. All processing is done locally on your own computer. This package does not save your credentials in any way.
+> When running the tool you will be prompted to insert your steam credentials. All processing is done locally on your computer. This package does not save your credentials in any way.
 
 Options:
 
@@ -134,15 +130,21 @@ Options:
 - `--cache` / `--no-cache` - Create a file cache for all market transactions (default: `--no-cache`)
 - `--interactive` / `--non-interactive` - Interactive or non-interactive steam authentication [default: `--interactive`]
 
-Example:
+Examples:
 
+Export your steam market history to a HTML file:
+```shell
+steam-market-history export --html
 ```
-steam-market-history export --csv --path /tmp/out
+
+Export your steam market history to a CSV file in a specific directory:
+```shell
+steam-market-history export --csv --path /tmp/steam-market-history
 ```
 
 ### `version`
 
-Display detailed information about this package
+Display detailed information about this package. This includes the version, the license and the authors.
 
 ```
 steam-market-history version
@@ -183,14 +185,6 @@ Don't forget to give the project a star! Thanks again!
 ## License
 
 Distributed under the MIT License. See `LICENSE` for more information.
-
-<p align="right">(<a href="#top">back to top</a>)</p>
-
-<!-- CONTACT -->
-
-## Contact
-
-sustineo\_ - [@sustineo\_](https://twitter.com/sustineo_) - dev@sustineo.de
 
 <p align="right">(<a href="#top">back to top</a>)</p>
 
