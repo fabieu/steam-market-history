@@ -7,10 +7,8 @@ from pathlib import Path
 from jinja2 import Template, select_autoescape
 import typer
 
-# Local modules
 
-
-def generate_csv(market_transactions: list, path: Path, launch: bool) -> None:
+def to_csv(market_transactions: list, path: Path, launch: bool) -> None:
     filename = "steam-market-history.csv"
 
     with open(filename, 'w', newline='', encoding="utf-8") as file:
@@ -22,7 +20,7 @@ def generate_csv(market_transactions: list, path: Path, launch: bool) -> None:
         typer.launch(str(path / filename), locate=True)
 
 
-def generate_html(market_transactions: list, path: Path, launch: bool) -> None:
+def to_html(market_transactions: list, path: Path, launch: bool) -> None:
     filename = "steam-market-history.html"
 
     with open(Path(__file__).parent.parent / "templates/index.html", encoding="utf-8") as template_file:

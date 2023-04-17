@@ -101,13 +101,13 @@
               <td>{{ item.item_name }}</td>
               <td>{{ item.game_name }}</td>
               <td>{{ item.listed_date }}</td>
-              {% if item.gainorloss == '+'%}
+              {% if item.gain_or_loss == '+'%}
               <td class="item-bought">purchased</td>
-              {% elif item.gainorloss == '-'%}
+              {% elif item.gain_or_loss == '-'%}
               <td class="item-sold">sold</td>
               {% endif %}
               <td>
-                {% if item.gainorloss == '+'%} -{{ item.price }} {% elif item.gainorloss == '-'%}
+                {% if item.gain_or_loss == '+'%} -{{ item.price }} {% elif item.gain_or_loss == '-'%}
                 +{{ item.price }} {% endif %}
               </td>
             </tr>
