@@ -63,8 +63,7 @@ steam-market-history is a command line tool written in Python which allows you t
 
 ### Key features
 
-- Extract your **entire** Steam Market History
-- Create a CSV-File with all transactions
+- Extract your **entire** Steam Market History with all transactions to a HTML, CSV or JSON file
 - Overview of _all_ transactions on a user-friendly webpage with searchable and filterable results
 
 ### Built With
@@ -88,7 +87,7 @@ To get a local copy up and running follow these simple example steps.
 
 Pip (recommended):
 
-```python
+```shell
 pip install steam-market-history
 ```
 
@@ -117,14 +116,15 @@ Currently, the following commands are supported:
 
 ### `export`
 
-Export your steam market history to a CSV or HTML file
+Export your steam market history to an HTML, JSON or CSV file
 
 > When running the tool you will be prompted to insert your steam credentials. All processing is done locally on your computer. This package does not save your credentials in any way.
 
 Options:
 
-- `--csv` - Export to csv file
-- `--html` - Export to html file
+- `--csv` - Export market transactions to csv file
+- `--html` - Export market transactions to html file
+- `--json` - Export market transactions to json file
 - `--path` - Output directory for all file based operations (default: current working directory)
 - `--launch` / `--no-launch` - Automatically open file(s) after export (default: `--launch`)
 - `--cache` / `--no-cache` - Create a file cache for all market transactions (default: `--no-cache`)
@@ -157,7 +157,6 @@ steam-market-history version
 ## Roadmap
 
 - [ ] Add options of verbosity
-- [ ] Export to JSON
 
 See the [open issues](https://gitlab.com/sustineo/steam-market-history/-/issues) for a full list of proposed features (and known issues).
 

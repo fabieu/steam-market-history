@@ -28,6 +28,7 @@ def version():
 def export(
         export_csv: bool = typer.Option(False, "--csv", help="Generate steam market history as csv file"),
         export_html: bool = typer.Option(False, "--html", help="Generate steam market history as interactive website"),
+        export_json: bool = typer.Option(False, "--json", help="Generate steam market history as json file"),
         path: Path = typer.Option(Path.cwd(), help="Path for file export"),
         launch: bool = typer.Option(True, help="Automatically open file(s) after export"),
         cache: bool = typer.Option(False, help="Cache market transactions. Use with caution!"),
@@ -41,7 +42,7 @@ def export(
     cache_path = "market_transactions.pkl"
 
     # Check if at least one export option is provided
-    if True not in {export_csv, export_html}:
+    if True not in {export_csv, export_html, export_json}:
         typer.echo(
             "Please provide at least one export option! For more information use 'steam-market-history export --help'",
             err=True)
@@ -71,6 +72,9 @@ def export(
 
     if export_html:
         exporter.to_html(market_transactions, path, launch)
+
+    if export_json:
+        exporter.to_json(market_transactions, path, launch)
 
 
 if __name__ == "__main__":
