@@ -10,15 +10,15 @@ keywords = ["steam", "CLI"]
 
 [tool.poetry.dependencies]
 python = "^3.8"
-beautifulsoup4 = "^4.12.2"
+beautifulsoup4 = "^4.12.3"
 Jinja2 = "^3.1.2"
-typer = "^0.7.0"
+typer = "^0.12.3"
 steam = "^1.4.4"
 
 [tool.poetry.dev-dependencies]
-pytest = "^7.3.1"
-autopep8 = "^2.0.2"
-vermin = "^1.5.1"
+pytest = "^8.2.1"
+autopep8 = "^2.2.0"
+vermin = "^1.6.0"
 
 [tool.poetry.scripts]
 steam-market-history = "steam_market_history.main:app"
