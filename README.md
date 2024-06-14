@@ -2,58 +2,30 @@
 
 <!-- PROJECT SHIELDS -->
 
-[![PyPI](https://img.shields.io/pypi/v/steam-market-history?style=for-the-badge)](https://pypi.org/project/steam-market-history/)
-[![PyPI - Python Version](https://img.shields.io/pypi/pyversions/steam-market-history?style=for-the-badge)](https://pypi.org/project/steam-market-history/)
-[![Gitlab pipeline status](https://img.shields.io/gitlab/pipeline-status/sustineo/steam-market-history?style=for-the-badge)](https://gitlab.com/sustineo/steam-market-history/-/pipelines)
-[![GitLab issues](https://img.shields.io/gitlab/issues/open/sustineo/steam-market-history?style=for-the-badge)](https://gitlab.com/sustineo/steam-market-history/-/issues)
-[![GitLab merge requests](https://img.shields.io/gitlab/merge-requests/open-raw/sustineo/steam-market-history?style=for-the-badge)](https://gitlab.com/sustineo/steam-market-history/-/merge_requests)
-[![GitLab](https://img.shields.io/gitlab/license/sustineo/steam-market-history?style=for-the-badge)](https://gitlab.com/sustineo/steam-market-history/-/blob/main/LICENSE)
+[![PyPI](https://img.shields.io/pypi/v/steam-market-history?style=flat-square)](https://pypi.org/project/steam-market-history/)
+[![PyPI - Python Version](https://img.shields.io/pypi/pyversions/steam-market-history?style=flat-square)](https://pypi.org/project/steam-market-history/)
+[![GitHub pipeline status](https://img.shields.io/github/actions/workflow/status/fabieu/steam-market-history/build.yml?style=flat-square)](https://github.com/fabieu/steam-market-history/actions)
+[![GitHub issues](https://img.shields.io/github/issues-raw/fabieu/steam-market-history?style=flat-square)](https://github.com/fabieu/steam-market-history/issues)
+[![GitHub merge requests](https://img.shields.io/github/issues-pr/fabieu/steam-market-history?style=flat-square)](https://github.com/fabieu/steam-market-history/pulls)
+[![GitHub](https://img.shields.io/github/license/fabieu/steam-market-history?style=flat-square)](https://github.com/fabieu/steam-market-history/blob/main/LICENSE)
 
 <!-- PROJECT LOGO -->
 <br />
 <div align="center">
-  <a href="https://gitlab.com/sustineo/steam-market-history">
-    <img src="https://gitlab.com/sustineo/steam-market-history/-/raw/main/docs/images/logo.svg" alt="Logo" width="120" height="120">
+  <a href="https://github.com/fabieu/steam-market-history">
+    <img src="https://raw.githubusercontent.com/fabieu/steam-market-history/main/docs/images/logo.svg" alt="Logo" width="120" height="120">
   </a>
 
-<h3 align="center">steam-market-history</h3>
+<h2 align="center">steam-market-history</h2>
 
   <p align="center">
     An easy-to-use CLI to export your steam market history to various formats
     <br />
-    <a href="https://gitlab.com/sustineo/steam-market-history/-/raw/main/docs/demo.gif">View Demo</a>
+    <a href="https://github.com/fabieu/steam-market-history/issues">Report Bug</a>
     ·
-    <a href="https://gitlab.com/sustineo/steam-market-history/-/issues">Report Bug</a>
-    ·
-    <a href="https://gitlab.com/sustineo/steam-market-history/-/issues">Request Feature</a>
+    <a href="https://github.com/fabieu/steam-market-history/issues">Request Feature</a>
   </p>
 </div>
-
-<!-- TABLE OF CONTENTS -->
-<details>
-  <summary>Table of Contents</summary>
-  <ol>
-    <li>
-      <a href="#about-the-project">About The Project</a>
-      <ul>
-        <li><a href="#built-with">Built With</a></li>
-      </ul>
-    </li>
-    <li>
-      <a href="#getting-started">Getting Started</a>
-      <ul>
-        <li><a href="#prerequisites">Prerequisites</a></li>
-        <li><a href="#installation">Installation</a></li>
-      </ul>
-    </li>
-    <li><a href="#usage">Usage</a></li>
-    <li><a href="#roadmap">Roadmap</a></li>
-    <li><a href="#contributing">Contributing</a></li>
-    <li><a href="#license">License</a></li>
-    <li><a href="#contact">Contact</a></li>
-    <li><a href="#acknowledgments">Acknowledgments</a></li>
-  </ol>
-</details>
 
 <!-- ABOUT THE PROJECT -->
 
@@ -66,10 +38,8 @@ steam-market-history is a command line tool written in Python which allows you t
 - Extract your **entire** Steam Market History with all transactions to a HTML, CSV or JSON file
 - Overview of _all_ transactions on a user-friendly webpage with searchable and filterable results
 
-### Built With
-
-- [Python](https://www.python.org/)
-- [Typer](https://typer.tiangolo.com/)
+## Demo
+<img src="https://raw.githubusercontent.com/fabieu/steam-market-history/main/docs/demo.gif">
 
 <p align="right">(<a href="#top">back to top</a>)</p>
 
@@ -95,7 +65,7 @@ Manual:
 
 1. Clone the repo
    ```sh
-   git clone https://gitlab.com/sustineo/steam-market-history.git
+   git clone https://github.com/fabieu/steam-market-history.git
    ```
 2. Install poetry (if not already installed)
    ```sh
@@ -118,6 +88,7 @@ Currently, the following commands are supported:
 
 Export your steam market history to an HTML, JSON or CSV file
 
+> [!NOTE] 
 > When running the tool you will be prompted to insert your steam credentials. All processing is done locally on your computer. This package does not save your credentials in any way.
 
 Options:
@@ -152,15 +123,11 @@ steam-market-history version
 
 <p align="right">(<a href="#top">back to top</a>)</p>
 
-<!-- ROADMAP -->
+<!-- BUILD WITH -->
+## Built With
 
-## Roadmap
-
-- [ ] Add options of verbosity
-
-See the [open issues](https://gitlab.com/sustineo/steam-market-history/-/issues) for a full list of proposed features (and known issues).
-
-<p align="right">(<a href="#top">back to top</a>)</p>
+- [Python](https://www.python.org/)
+- [Typer](https://typer.tiangolo.com/)
 
 <!-- CONTRIBUTING -->
 
