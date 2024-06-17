@@ -3,7 +3,7 @@
   <component name="Black">
     <option name="sdkName" value="Poetry (steam-market-history)" />
   </component>
-  <component name="ProjectRootManager" version="2" languageLevel="JDK_20" default="true" project-jdk-name="Poetry (steam-market-history)" project-jdk-type="Python SDK">
+  <component name="ProjectRootManager" version="2" languageLevel="JDK_20" default="true">
     <output url="file://$PROJECT_DIR$/out" />
   </component>
 </project>
