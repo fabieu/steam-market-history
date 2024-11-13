@@ -2,9 +2,11 @@
 
 <!-- PROJECT SHIELDS -->
 
+<!--
 [![PyPI](https://img.shields.io/pypi/v/steam-market-history?style=flat-square)](https://pypi.org/project/steam-market-history/)
+[![GitHub pipeline status](https://img.shields.io/github/actions/workflow/status/fabieu/steam-market-history/build.yml?style=flat-square)](https://github.com/fabieu/steam-market-history/actions) 
+-->
 [![PyPI - Python Version](https://img.shields.io/pypi/pyversions/steam-market-history?style=flat-square)](https://pypi.org/project/steam-market-history/)
-[![GitHub pipeline status](https://img.shields.io/github/actions/workflow/status/fabieu/steam-market-history/build.yml?style=flat-square)](https://github.com/fabieu/steam-market-history/actions)
 [![GitHub issues](https://img.shields.io/github/issues-raw/fabieu/steam-market-history?style=flat-square)](https://github.com/fabieu/steam-market-history/issues)
 [![GitHub merge requests](https://img.shields.io/github/issues-pr/fabieu/steam-market-history?style=flat-square)](https://github.com/fabieu/steam-market-history/pulls)
 [![GitHub](https://img.shields.io/github/license/fabieu/steam-market-history?style=flat-square)](https://github.com/fabieu/steam-market-history/blob/main/LICENSE)
@@ -55,12 +57,6 @@ To get a local copy up and running follow these simple example steps.
 
 ### Installation
 
-Pip (recommended):
-
-```shell
-pip install steam-market-history
-```
-
 Manual:
 
 1. Clone the repo
@@ -75,6 +71,12 @@ Manual:
    ```sh
    poetry install && poetry shell
    ```
+
+Pip (~~recommended~~, currently broken, see [#16](https://github.com/fabieu/steam-market-history/issues/16)):
+
+```shell
+pip install steam-market-history
+```
 
 <p align="right">(<a href="#top">back to top</a>)</p>
 
