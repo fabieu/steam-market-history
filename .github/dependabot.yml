@@ -1,0 +1,37 @@
+version: 2
+updates:
+  - package-ecosystem: "pip"
+    directory: "/"
+    schedule:
+      interval: "weekly"
+      day: "saturday"
+      time: "07:00"
+    labels:
+      - "dependencies"
+    assignees:
+      - "fabieu"
+    groups:
+      major-updates:
+        update-types:
+          - "major"
+      minor-updates:
+        update-types:
+          - "minor"
+          - "patch"
+      other-updates:
+        patterns:
+          - "*"
+  - package-ecosystem: "github-actions"
+    directory: "/"
+    schedule:
+      interval: "weekly"
+      day: "saturday"
+      time: "07:00"
+    labels:
+      - "dependencies"
+    assignees:
+      - "fabieu"
+    groups:
+      gh-actions:
+        patterns:
+          - "*"
