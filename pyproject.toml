@@ -12,12 +12,12 @@ keywords = ["steam", "CLI"]
 python = "^3.8"
 beautifulsoup4 = "^4.12.3"
 Jinja2 = "^3.1.4"
-typer = "^0.12.3"
-steam = { git = "https://github.com/FailSpy/steam-py-lib.git", rev = "3db3cfe"}
+typer = "^0.13.0"
+steam = { git = "https://github.com/FailSpy/steam-py-lib", rev = "3db3cfe04fb16fc9c212244d96c86b5164905c82" }
 
 [tool.poetry.dev-dependencies]
-pytest = "^8.2.2"
-autopep8 = "^2.3.0"
+pytest = "^8.3.3"
+autopep8 = "^2.3.1"
 vermin = "^1.6.0"
 
 [tool.poetry.scripts]
