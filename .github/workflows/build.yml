@@ -1,11 +1,6 @@
 name: Build and publish spotify-utils package
 
 on:
-  push:
-    branches:
-      - main
-    paths:
-      - pyproject.toml
   workflow_dispatch:
 
 concurrency:
