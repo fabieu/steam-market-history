@@ -57,7 +57,7 @@ To get a local copy up and running follow these simple example steps.
 
 ### Installation
 
-Manual:
+Install manually using Poetry (recommended):
 
 1. Clone the repo
    ```sh
@@ -72,11 +72,8 @@ Manual:
    poetry install && poetry shell
    ```
 
-Pip (~~recommended~~, currently broken, see [#16](https://github.com/fabieu/steam-market-history/issues/16)):
-
-```shell
-pip install steam-market-history
-```
+> [!WARNING]
+> PyPI installation (`pip install steam-market-history`) is currently not available due to changes in Steam's authentication mechanism. The package relies on a fork of the steam library that cannot be published to PyPI. Please use the manual installation method above. See [#16](https://github.com/fabieu/steam-market-history/issues/16) for more details.
 
 <p align="right">(<a href="#top">back to top</a>)</p>
 
