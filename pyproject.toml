@@ -18,7 +18,7 @@ steam = { git = "https://github.com/FailSpy/steam-py-lib", rev = "3db3cfe04fb16f
 [tool.poetry.dev-dependencies]
 pytest = "^8.3.5"
 autopep8 = "^2.3.1"
-vermin = "^1.7.0"
+vermin = "^1.8.0"
 
 [tool.poetry.scripts]
 steam-market-history = "steam_market_history.main:app"
