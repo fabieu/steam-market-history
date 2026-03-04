@@ -39,7 +39,7 @@ def _save_cached_transactions(market_transactions: list[MarketTransaction]) -> N
 @app.command()
 def version():
     """
-    Display detailed information about this package. For more information use 'steam-market-history --help'
+    Display package version, author, and license information.
     """
     console.print(f"steam-market-history")
     console.print(f"Version: {__version__}")
@@ -49,15 +49,16 @@ def version():
 
 @app.command()
 def export(
-        export_csv: bool = typer.Option(False, "--csv", help="Generate steam market history as csv file"),
-        export_html: bool = typer.Option(False, "--html", help="Generate steam market history as interactive website"),
-        export_json: bool = typer.Option(False, "--json", help="Generate steam market history as json file"),
-        base_path: Path = typer.Option(Path.cwd() / "export", "--path", help="Path for file export"),
-        cache: bool = typer.Option(False, help="Use cached market transactions for faster subsequent exports")
+        export_csv: bool = typer.Option(False, "--csv", help="Export market history as a CSV file"),
+        export_html: bool = typer.Option(False, "--html", help="Export market history as an interactive HTML file"),
+        export_json: bool = typer.Option(False, "--json", help="Export market history as a JSON file"),
+        base_path: Path = typer.Option(Path.cwd() / "export", "--path", help="Directory to write exported files into"),
+        cache: bool = typer.Option(False, "--cache", help="Cache fetched transactions to disk and reuse on subsequent runs")
 ):
     """
-    Export your entire steam market history to a csv or html file. For more information use 'steam-market-history
-    export --help'.
+    Fetch your Steam market history and export it to one or more file formats.
+    At least one of --csv, --html, or --json must be provided.
+    Exported filenames include a unique ID to avoid overwriting previous exports.
     """
     # Check if at least one export option is provided
     if True not in {export_csv, export_html, export_json}:
