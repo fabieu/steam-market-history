@@ -5,7 +5,7 @@ from pathlib import Path
 import typer
 
 from steam_market_history import __version__, __metadata__
-from steam_market_history.console import console, ERROR_STYLE, WARNING_STYLE
+from steam_market_history.console import console, err_console, ERROR_STYLE, WARNING_STYLE
 from steam_market_history.models import MarketTransaction
 from steam_market_history.modules import steam, exporter
 
@@ -23,7 +23,7 @@ def _load_cached_transactions() -> list[MarketTransaction] | None:
         with open(CACHE_PATH_TRANSACTIONS, 'r', encoding="utf-8") as f:
             return [MarketTransaction(**t) for t in json.load(f)]
     except (json.JSONDecodeError, TypeError, KeyError) as e:
-        console.print(f"Warning: cache file is corrupted ({e}), re-fetching.", style=WARNING_STYLE)
+        err_console.print(f"Warning: cache file is corrupted ({e}), re-fetching.", style=WARNING_STYLE)
 
         CACHE_PATH_TRANSACTIONS.unlink(missing_ok=True)
         return None
@@ -61,9 +61,10 @@ def export(
     """
     # Check if at least one export option is provided
     if True not in {export_csv, export_html, export_json}:
-        console.print(
+        err_console.print(
             "Please provide at least one export option! For more information use 'steam-market-history export --help'",
-            style=ERROR_STYLE)
+            style=ERROR_STYLE
+        )
         raise typer.Exit(1)
 
     market_transactions = _load_cached_transactions() if cache else None
