@@ -5,6 +5,7 @@ from pathlib import Path
 import typer
 
 from steam_market_history import __version__, __metadata__
+from steam_market_history.console import console, ERROR_STYLE
 from steam_market_history.models import MarketTransaction
 from steam_market_history.modules import steam, exporter
 
@@ -34,10 +35,10 @@ def version():
     """
     Display detailed information about this package. For more information use 'steam-market-history --help'
     """
-    typer.echo(f"steam-market-history")
-    typer.echo(f"Version: {__version__}")
-    typer.echo(f"Author: {__metadata__.get('Author')}")
-    typer.echo(f"License: {__metadata__.get('License')}")
+    console.print(f"steam-market-history")
+    console.print(f"Version: {__version__}")
+    console.print(f"Author: {__metadata__.get('Author')}")
+    console.print(f"License: {__metadata__.get('License')}")
 
 
 @app.command()
@@ -55,9 +56,9 @@ def export(
     """
     # Check if at least one export option is provided
     if True not in {export_csv, export_html, export_json}:
-        typer.echo(
+        console.print(
             "Please provide at least one export option! For more information use 'steam-market-history export --help'",
-            err=True)
+            style=ERROR_STYLE)
         raise typer.Exit(1)
 
     market_transactions = _load_cached_transactions() if cache else None
