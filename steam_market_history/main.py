@@ -1,12 +1,32 @@
-import pickle
-import typer
+import json
+from dataclasses import asdict
 from pathlib import Path
 
+import typer
+
 from steam_market_history import __version__, __metadata__
+from steam_market_history.models import MarketTransaction
 from steam_market_history.modules import steam, exporter
 
-# Initialize Typer and populate commands
 app = typer.Typer(help=f"steam-market-history v{__version__}")
+
+CACHE_DIR = Path(".cache")
+CACHE_PATH = CACHE_DIR / "market_transactions.json"
+
+
+def _load_cached_transactions() -> list[MarketTransaction] | None:
+    if not CACHE_PATH.exists():
+        return None
+
+    with open(CACHE_PATH, 'r', encoding="utf-8") as f:
+        return [MarketTransaction(**t) for t in json.load(f)]
+
+
+def _save_cached_transactions(market_transactions: list[MarketTransaction]) -> None:
+    CACHE_DIR.mkdir(exist_ok=True)  # Ensure the cache directory exists
+
+    with open(CACHE_PATH, 'w', encoding="utf-8") as f:
+        json.dump([asdict(t) for t in market_transactions], f, indent=4)
 
 
 @app.command()
@@ -33,8 +53,6 @@ def export(
     Export your entire steam market history to a csv or html file. For more information use 'steam-market-history
     export --help'.
     """
-    cache_path = "market_transactions.pkl"
-
     # Check if at least one export option is provided
     if True not in {export_csv, export_html, export_json}:
         typer.echo(
@@ -45,18 +63,13 @@ def export(
     # Login to steam
     steam_session = steam.login_cli()
 
-    # TODO: Improve caching mechanism (maybe use cachetools?)
-    if cache:
-        try:
-            with open(cache_path, 'rb') as f:
-                market_transactions = pickle.load(f)
-        except FileNotFoundError:
-            market_transactions = steam.fetch_market_history(steam_session)
+    market_transactions = _load_cached_transactions() if cache else None
 
-            with open(cache_path, 'wb') as f:
-                pickle.dump(market_transactions, f)
-    else:
+    if market_transactions is None:
         market_transactions = steam.fetch_market_history(steam_session)
+
+        if cache:
+            _save_cached_transactions(market_transactions)
 
     if export_csv:
         exporter.to_csv(market_transactions, path, launch)

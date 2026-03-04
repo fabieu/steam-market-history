@@ -6,6 +6,8 @@ import steam.webauth as wa
 import typer
 from bs4 import BeautifulSoup
 
+from steam_market_history.models import MarketTransaction
+
 app = typer.Typer()
 
 
@@ -17,7 +19,7 @@ def login_cli() -> requests.Session:
     return wa.WebAuth(username).cli_login()
 
 
-def fetch_market_history(session: requests.Session) -> list:
+def fetch_market_history(session: requests.Session) -> list[MarketTransaction]:
     """
     Fetch market history from Steam returns an array containing all market listings
     """
@@ -69,13 +71,14 @@ def fetch_market_history(session: requests.Session) -> list:
 
         # Format original steam data (market_listing_row) and add it to an array
         if gain_or_loss in ["+", "-"]:
-            market_transactions.append({
-                "game_name": game_name,
-                "item_name": item_name,
-                "listed_date": listed_date,
-                "price": price,
-                "gain_or_loss": gain_or_loss,
-                "image_url": image_url,
-            })
+            market_transaction = MarketTransaction(
+                game_name=game_name,
+                item_name=item_name,
+                listed_date=listed_date,
+                price=price,
+                gain_or_loss=gain_or_loss,
+                image_url=image_url,
+            )
+            market_transactions.append(market_transaction)
 
     return market_transactions
