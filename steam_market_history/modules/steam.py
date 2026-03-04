@@ -1,37 +1,27 @@
-# Build-in modules
 import json
-import os
 import re
 
-# PyPi modules
-from bs4 import BeautifulSoup
+import requests
 import steam.webauth as wa
 import typer
+from bs4 import BeautifulSoup
+from rich.progress import BarColumn, MofNCompleteColumn, Progress, SpinnerColumn, TextColumn
+from steam_market_history.console import CHECKMARK
+
+from steam_market_history.models import MarketTransaction
 
 app = typer.Typer()
 
 
-def login_cli() -> wa.WebAuth:
+def login_cli() -> requests.Session:
     """
-    Login to Steam via CLI and return the authenticated websession
+    Login to Steam via CLI and return the authenticated web session
     """
     username = typer.prompt("Enter Steam username")
     return wa.WebAuth(username).cli_login()
 
 
-def login_non_interactive() -> wa.WebAuth:
-    """
-    Login to Steam with username password, email_code and twofactor_code and return the authenticated websession
-    """
-    username = os.getenv("STEAM_USERNAME")
-    password = os.getenv("STEAM_PASSWORD")
-    email_code = os.getenv("STEAM_EMAIL_CODE")
-    twofactor_code = os.getenv("STEAM_TWOFACTOR_CODE")
-    return wa.WebAuth(username).login(password=password, email_code=email_code,
-                                      twofactor_code=twofactor_code)
-
-
-def fetch_market_history(steam_session: wa.WebAuth) -> list:
+def fetch_market_history(session: requests.Session) -> list[MarketTransaction]:
     """
     Fetch market history from Steam returns an array containing all market listings
     """
@@ -44,21 +34,28 @@ def fetch_market_history(steam_session: wa.WebAuth) -> list:
     count = 500
     total_count = 1
 
-    while start < total_count:
-        page = steam_session.get(f'https://steamcommunity.com/market/myhistory/render/?count={count}&start={start}')
-        page_content = json.loads(page.content)
+    with Progress(
+            SpinnerColumn(finished_text=CHECKMARK),
+            TextColumn("[progress.description]{task.description}"),
+            BarColumn(),
+            MofNCompleteColumn(),
+    ) as progress:
+        task = progress.add_task("Fetching market history...", total=None)
 
-        # Process market history with the BeautifulSoup library
-        if page_content["results_html"]:
-            content += page_content["results_html"]
+        while start < total_count:
+            page = session.get(f'https://steamcommunity.com/market/myhistory/render/?count={count}&start={start}')
+            page_content = json.loads(page.content)
 
-        # Update conditions for while loop
-        start = page_content["start"] + count
+            if page_content["results_html"]:
+                content += page_content["results_html"]
 
-        if page_content.get("total_count"):
-            total_count = page_content["total_count"]
+            start = page_content["start"] + count
 
-    # Process market history with the BeautifulSoup library
+            if page_content.get("total_count"):
+                total_count = page_content["total_count"]
+
+            progress.update(task, total=total_count, completed=min(start, total_count))
+
     document = BeautifulSoup(content, 'html.parser')
     market_listing_rows = document.find_all("div", class_="market_listing_row")
 
@@ -78,18 +75,19 @@ def fetch_market_history(steam_session: wa.WebAuth) -> list:
         image_url = item_img_element.get("src") if item_img_element else None
 
         # Format price of market listing item
-        if re.search(r"^\d+,(\d|-){2}$", price):
+        if price and re.search(r"^\d+,(\d|-){2}$", price):
             price = price.replace(",--", ".00").replace(",", ".")
 
         # Format original steam data (market_listing_row) and add it to an array
         if gain_or_loss in ["+", "-"]:
-            market_transactions.append({
-                "game_name": game_name,
-                "item_name": item_name,
-                "listed_date": listed_date,
-                "price": price,
-                "gain_or_loss": gain_or_loss,
-                "image_url": image_url,
-            })
+            market_transaction = MarketTransaction(
+                game_name=game_name,
+                item_name=item_name,
+                listed_date=listed_date,
+                price=price,
+                gain_or_loss=gain_or_loss,
+                image_url=image_url,
+            )
+            market_transactions.append(market_transaction)
 
     return market_transactions

@@ -1,80 +1,94 @@
-# Built-in modules
+import json
+from dataclasses import asdict
 from pathlib import Path
-import pickle
 
-# PyPi modules
 import typer
 
-# Local modules
 from steam_market_history import __version__, __metadata__
+from steam_market_history.console import console, err_console, ERROR_STYLE, WARNING_STYLE
+from steam_market_history.models import MarketTransaction
 from steam_market_history.modules import steam, exporter
 
-# Initialize Typer and populate commands
 app = typer.Typer(help=f"steam-market-history v{__version__}")
+
+CACHE_DIR = Path(".cache")
+CACHE_PATH_TRANSACTIONS = CACHE_DIR / "steam_market_transactions.json"
+
+
+def _load_cached_transactions() -> list[MarketTransaction] | None:
+    if not CACHE_PATH_TRANSACTIONS.exists():
+        return None
+
+    try:
+        with open(CACHE_PATH_TRANSACTIONS, 'r', encoding="utf-8") as f:
+            return [MarketTransaction(**t) for t in json.load(f)]
+    except (json.JSONDecodeError, TypeError, KeyError) as e:
+        err_console.print(f"Warning: cache file is corrupted ({e}), re-fetching.", style=WARNING_STYLE)
+
+        CACHE_PATH_TRANSACTIONS.unlink(missing_ok=True)
+        return None
+
+
+def _save_cached_transactions(market_transactions: list[MarketTransaction]) -> None:
+    CACHE_DIR.mkdir(exist_ok=True)  # Ensure the cache directory exists
+
+    with open(CACHE_PATH_TRANSACTIONS, 'w', encoding="utf-8") as f:
+        json.dump([asdict(t) for t in market_transactions], f, indent=4)
 
 
 @app.command()
 def version():
     """
-    Display detailed information about this package. For more information use 'steam-market-history --help'
+    Display package version, author, and license information.
     """
-    typer.echo(f"steam-market-history")
-    typer.echo(f"Version: {__version__}")
-    typer.echo(f"Author: {__metadata__.get('Author')}")
-    typer.echo(f"License: {__metadata__.get('License')}")
+    console.print(f"steam-market-history")
+    console.print(f"Version: {__version__}")
+    console.print(f"Author: {__metadata__.get('Author')}")
+    console.print(f"License: {__metadata__.get('License')}")
 
 
 @app.command()
 def export(
-        export_csv: bool = typer.Option(False, "--csv", help="Generate steam market history as csv file"),
-        export_html: bool = typer.Option(False, "--html", help="Generate steam market history as interactive website"),
-        export_json: bool = typer.Option(False, "--json", help="Generate steam market history as json file"),
-        path: Path = typer.Option(Path.cwd(), help="Path for file export"),
-        launch: bool = typer.Option(True, help="Automatically open file(s) after export"),
-        cache: bool = typer.Option(False, help="Cache market transactions. Use with caution!"),
-        interactive: bool = typer.Option(True, "--interactive/--non-interactive",
-                                         help="Interactive or non-interactive steam authentication")
+        export_csv: bool = typer.Option(False, "--csv", help="Export market history as a CSV file"),
+        export_html: bool = typer.Option(False, "--html", help="Export market history as an interactive HTML file"),
+        export_json: bool = typer.Option(False, "--json", help="Export market history as a JSON file"),
+        base_path: Path = typer.Option(Path.cwd() / "export", "--path", help="Directory to write exported files into"),
+        cache: bool = typer.Option(False, "--cache", help="Cache fetched transactions to disk and reuse on subsequent runs")
 ):
     """
-    Export your entire steam market history to a csv or html file. For more information use 'steam-market-history
-    export --help'.
+    Fetch your Steam market history and export it to one or more file formats.
+    At least one of --csv, --html, or --json must be provided.
+    Exported filenames include a unique ID to avoid overwriting previous exports.
     """
-    cache_path = "market_transactions.pkl"
-
     # Check if at least one export option is provided
     if True not in {export_csv, export_html, export_json}:
-        typer.echo(
+        err_console.print(
             "Please provide at least one export option! For more information use 'steam-market-history export --help'",
-            err=True)
+            style=ERROR_STYLE
+        )
         raise typer.Exit(1)
 
-    # Login to steam
-    if interactive:
+    market_transactions = _load_cached_transactions() if cache else None
+
+    if market_transactions is None:
         steam_session = steam.login_cli()
-    else:
-        steam_session = steam.login_non_interactive()
 
-    # TODO: Improve caching mechanism (maybe use cachetools?)
-    if cache:
-        try:
-            with open(cache_path, 'rb') as f:
-                market_transactions = pickle.load(f)
-        except FileNotFoundError:
-            market_transactions = steam.fetch_market_history(steam_session)
-
-            with open(cache_path, 'wb') as f:
-                pickle.dump(market_transactions, f)
-    else:
         market_transactions = steam.fetch_market_history(steam_session)
 
+        if cache:
+            _save_cached_transactions(market_transactions)
+
+    if export_csv or export_html or export_json:
+        base_path.mkdir(exist_ok=True, parents=True)  # Ensure the base path exists
+
     if export_csv:
-        exporter.to_csv(market_transactions, path, launch)
+        exporter.to_csv(market_transactions, base_path)
 
     if export_html:
-        exporter.to_html(market_transactions, path, launch)
+        exporter.to_html(market_transactions, base_path)
 
     if export_json:
-        exporter.to_json(market_transactions, path, launch)
+        exporter.to_json(market_transactions, base_path)
 
 
 if __name__ == "__main__":
