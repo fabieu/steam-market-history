@@ -53,7 +53,7 @@ To get a local copy up and running follow these simple example steps.
 
 ### Prerequisites
 
-- Python >= 3.8
+- Python >= 3.10
 
 ### Installation
 
@@ -88,20 +88,20 @@ Currently, the following commands are supported:
 
 ### `export`
 
-Export your steam market history to an HTML, JSON or CSV file
+Fetch your Steam market history and export it to one or more file formats.
 
-> [!NOTE] 
-> When running the tool you will be prompted to insert your steam credentials. All processing is done locally on your computer. This package does not save your credentials in any way.
+> [!NOTE]
+> On the first run you will be prompted for your Steam credentials. After a successful login the session is cached locally so subsequent runs do not require you to log in again. All processing is done locally on your machine — credentials are never stored in plain text.
 
 Options:
 
-- `--csv` - Export market transactions to csv file
-- `--html` - Export market transactions to html file
-- `--json` - Export market transactions to json file
-- `--path` - Output directory for all file based operations (default: current working directory)
-- `--launch` / `--no-launch` - Automatically open file(s) after export (default: `--launch`)
-- `--cache` / `--no-cache` - Create a file cache for all market transactions (default: `--no-cache`)
-- `--interactive` / `--non-interactive` - Interactive or non-interactive steam authentication [default: `--interactive`]
+- `--csv` - Export market history as a CSV file
+- `--html` - Export market history as an interactive HTML file
+- `--json` - Export market history as a JSON file
+- `--path` - Directory to write exported files into (default: `./export`)
+- `--cache` - Cache fetched transactions to disk and reuse on subsequent runs (default: disabled)
+
+Exported filenames include a unique ID (e.g. `steam-market-history-3f2e1a....csv`) to avoid overwriting previous exports.
 
 Examples:
 
@@ -110,16 +110,21 @@ Export your steam market history to a HTML file:
 steam-market-history export --html
 ```
 
-Export your steam market history to a CSV file in a specific directory:
+Export to CSV and JSON in a specific directory:
 ```shell
-steam-market-history export --csv --path /tmp/steam-market-history
+steam-market-history export --csv --json --path /tmp/steam-market-history
+```
+
+Export using a cached copy of your transaction history:
+```shell
+steam-market-history export --html --cache
 ```
 
 ### `version`
 
-Display detailed information about this package. This includes the version, the license and the authors.
+Display package version, author, and license information.
 
-```
+```shell
 steam-market-history version
 ```
 
@@ -130,6 +135,7 @@ steam-market-history version
 
 - [Python](https://www.python.org/)
 - [Typer](https://typer.tiangolo.com/)
+- [Rich](https://github.com/Textualize/rich)
 
 <!-- CONTRIBUTING -->
 
