@@ -11,21 +11,21 @@ from steam_market_history.modules import steam, exporter
 app = typer.Typer(help=f"steam-market-history v{__version__}")
 
 CACHE_DIR = Path(".cache")
-CACHE_PATH = CACHE_DIR / "market_transactions.json"
+CACHE_PATH_TRANSACTIONS = CACHE_DIR / "steam_market_transactions.json"
 
 
 def _load_cached_transactions() -> list[MarketTransaction] | None:
-    if not CACHE_PATH.exists():
+    if not CACHE_PATH_TRANSACTIONS.exists():
         return None
 
-    with open(CACHE_PATH, 'r', encoding="utf-8") as f:
+    with open(CACHE_PATH_TRANSACTIONS, 'r', encoding="utf-8") as f:
         return [MarketTransaction(**t) for t in json.load(f)]
 
 
 def _save_cached_transactions(market_transactions: list[MarketTransaction]) -> None:
     CACHE_DIR.mkdir(exist_ok=True)  # Ensure the cache directory exists
 
-    with open(CACHE_PATH, 'w', encoding="utf-8") as f:
+    with open(CACHE_PATH_TRANSACTIONS, 'w', encoding="utf-8") as f:
         json.dump([asdict(t) for t in market_transactions], f, indent=4)
 
 
@@ -60,12 +60,10 @@ def export(
             err=True)
         raise typer.Exit(1)
 
-    # Login to steam
-    steam_session = steam.login_cli()
-
     market_transactions = _load_cached_transactions() if cache else None
 
     if market_transactions is None:
+        steam_session = steam.login_cli()
         market_transactions = steam.fetch_market_history(steam_session)
 
         if cache:
