@@ -33,7 +33,8 @@
 
 ## About The Project
 
-steam-market-history is a command line tool written in Python which allows you to extract your entire Steam Market History with all transaction (sales/purchases) in a CSV or HTML file.
+steam-market-history is a command line tool written in Python which allows you to extract your entire Steam Market
+History with all transaction (sales/purchases) in a CSV or HTML file.
 
 ### Key features
 
@@ -41,6 +42,7 @@ steam-market-history is a command line tool written in Python which allows you t
 - Overview of _all_ transactions on a user-friendly webpage with searchable and filterable results
 
 ## Demo
+
 <img src="https://raw.githubusercontent.com/fabieu/steam-market-history/main/docs/demo.gif">
 
 <p align="right">(<a href="#top">back to top</a>)</p>
@@ -57,6 +59,12 @@ To get a local copy up and running follow these simple example steps.
 
 ### Installation
 
+Pip (recommended):
+
+```shell
+pipx install steam-market-history
+```
+
 Manual:
 
 1. Clone the repo
@@ -72,12 +80,6 @@ Manual:
    poetry install && poetry shell
    ```
 
-Pip (~~recommended~~, currently broken, see [#16](https://github.com/fabieu/steam-market-history/issues/16)):
-
-```shell
-pip install steam-market-history
-```
-
 <p align="right">(<a href="#top">back to top</a>)</p>
 
 <!-- USAGE EXAMPLES -->
@@ -91,7 +93,9 @@ Currently, the following commands are supported:
 Fetch your Steam market history and export it to one or more file formats.
 
 > [!NOTE]
-> On the first run you will be prompted for your Steam credentials. After a successful login the session is cached locally so subsequent runs do not require you to log in again. All processing is done locally on your machine — credentials are never stored in plain text.
+> On the first run you will be prompted for your Steam credentials. After a successful login the session is cached
+> locally so subsequent runs do not require you to log in again. All processing is done locally on your machine —
+> credentials are never stored in plain text.
 
 Options:
 
@@ -101,21 +105,25 @@ Options:
 - `--path` - Directory to write exported files into (default: `./export`)
 - `--cache` - Cache fetched transactions to disk and reuse on subsequent runs (default: disabled)
 
-Exported filenames include a unique ID (e.g. `steam-market-history-3f2e1a....csv`) to avoid overwriting previous exports.
+Exported filenames include a unique ID (e.g. `steam-market-history-3f2e1a....csv`) to avoid overwriting previous
+exports.
 
 Examples:
 
 Export your steam market history to a HTML file:
+
 ```shell
 steam-market-history export --html
 ```
 
 Export to CSV and JSON in a specific directory:
+
 ```shell
 steam-market-history export --csv --json --path /tmp/steam-market-history
 ```
 
 Export using a cached copy of your transaction history:
+
 ```shell
 steam-market-history export --html --cache
 ```
@@ -131,6 +139,7 @@ steam-market-history version
 <p align="right">(<a href="#top">back to top</a>)</p>
 
 <!-- BUILD WITH -->
+
 ## Built With
 
 - [Python](https://www.python.org/)
@@ -141,9 +150,11 @@ steam-market-history version
 
 ## Contributing
 
-Contributions are what make the open source community such an amazing place to learn, inspire, and create. Any contributions you make are **greatly appreciated**.
+Contributions are what make the open source community such an amazing place to learn, inspire, and create. Any
+contributions you make are **greatly appreciated**.
 
-If you have a suggestion that would make this better, please fork the repo and create a pull request. You can also simply open an issue with the tag "enhancement".
+If you have a suggestion that would make this better, please fork the repo and create a pull request. You can also
+simply open an issue with the tag "enhancement".
 Don't forget to give the project a star! Thanks again!
 
 1. Fork the Project
