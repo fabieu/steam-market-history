@@ -1,6 +1,6 @@
 import csv
 import json
-import typer
+import uuid
 from dataclasses import asdict
 from datetime import datetime
 from jinja2 import Template, select_autoescape
@@ -12,24 +12,21 @@ from steam_market_history.models import MarketTransaction
 base_name = "steam-market-history"
 
 
-def to_csv(market_transactions: list[MarketTransaction], path: Path, launch: bool) -> None:
-    filename = base_name + ".csv"
-    output_path = (path / filename).resolve()
+def to_csv(market_transactions: list[MarketTransaction], base_path: Path) -> None:
+    filename = f"{base_name}-{uuid.uuid4()}.csv"
+    output_path = (base_path / filename).resolve()
 
     with open(output_path, 'w', newline='', encoding="utf-8") as file:
         writer = csv.writer(file, delimiter=',')
         writer.writerow(asdict(market_transactions[0]).keys())
         writer.writerows([asdict(x).values() for x in market_transactions])
 
-    console.print(f"{CHECKMARK} CSV exported: [bold]{output_path}[/bold]")
-
-    if launch:
-        typer.launch(str(output_path), locate=True)
+    console.print(f"{CHECKMARK} CSV exported: [bold]{output_path}[/bold]", highlight=False)
 
 
-def to_html(market_transactions: list[MarketTransaction], path: Path, launch: bool) -> None:
-    filename = base_name + ".html"
-    output_path = (path / filename).resolve()
+def to_html(market_transactions: list[MarketTransaction], base_path: Path) -> None:
+    filename = f"{base_name}-{uuid.uuid4()}.html"
+    output_path = (base_path / filename).resolve()
 
     with open(Path(__file__).parent.parent / "templates/index.html", encoding="utf-8") as template_file:
         template = Template(template_file.read(), autoescape=select_autoescape())
@@ -42,15 +39,12 @@ def to_html(market_transactions: list[MarketTransaction], path: Path, launch: bo
         rendered_file.write(template.render(
             summary=summary, transactions=market_transactions, current_date=current_date))
 
-    console.print(f"{CHECKMARK} HTML exported: [bold]{output_path}[/bold]")
-
-    if launch:
-        typer.launch(str(output_path))
+    console.print(f"{CHECKMARK} HTML exported: [bold]{output_path}[/bold]", highlight=False)
 
 
-def to_json(market_transactions: list[MarketTransaction], path: Path, launch: bool) -> None:
-    filename = base_name + ".json"
-    output_path = (path / filename).resolve()
+def to_json(market_transactions: list[MarketTransaction], base_path: Path) -> None:
+    filename = f"{base_name}-{uuid.uuid4()}.json"
+    output_path = (base_path / filename).resolve()
 
     wrapper = {
         "data": [asdict(t) for t in market_transactions]
@@ -59,7 +53,4 @@ def to_json(market_transactions: list[MarketTransaction], path: Path, launch: bo
     with open(output_path, 'w', encoding="utf-8") as file:
         file.write(json.dumps(wrapper, indent=4))
 
-    console.print(f"{CHECKMARK} JSON exported: [bold]{output_path}[/bold]")
-
-    if launch:
-        typer.launch(str(output_path))
+    console.print(f"{CHECKMARK} JSON exported: [bold]{output_path}[/bold]", highlight=False)
