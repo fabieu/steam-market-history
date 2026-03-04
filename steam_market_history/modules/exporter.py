@@ -1,7 +1,7 @@
 import csv
 import json
 import uuid
-from dataclasses import asdict
+from dataclasses import asdict, fields
 from datetime import datetime
 from jinja2 import Template, select_autoescape
 from pathlib import Path
@@ -18,7 +18,7 @@ def to_csv(market_transactions: list[MarketTransaction], base_path: Path) -> Non
 
     with open(output_path, 'w', newline='', encoding="utf-8") as file:
         writer = csv.writer(file, delimiter=',')
-        writer.writerow(asdict(market_transactions[0]).keys())
+        writer.writerow([f.name for f in fields(MarketTransaction)])
         writer.writerows([asdict(x).values() for x in market_transactions])
 
     console.print(f"{CHECKMARK} CSV exported: [bold]{output_path}[/bold]", highlight=False)

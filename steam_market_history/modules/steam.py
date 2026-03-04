@@ -75,7 +75,7 @@ def fetch_market_history(session: requests.Session) -> list[MarketTransaction]:
         image_url = item_img_element.get("src") if item_img_element else None
 
         # Format price of market listing item
-        if re.search(r"^\d+,(\d|-){2}$", price):
+        if price and re.search(r"^\d+,(\d|-){2}$", price):
             price = price.replace(",--", ".00").replace(",", ".")
 
         # Format original steam data (market_listing_row) and add it to an array
