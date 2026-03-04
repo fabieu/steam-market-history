@@ -12,21 +12,23 @@ from steam_market_history.models import MarketTransaction
 base_name = "steam-market-history"
 
 
+def _build_output_path(base_path: Path, extension: str) -> Path:
+    return (base_path / f"{base_name}-{uuid.uuid4()}.{extension}").resolve()
+
+
 def to_csv(market_transactions: list[MarketTransaction], base_path: Path) -> None:
-    filename = f"{base_name}-{uuid.uuid4()}.csv"
-    output_path = (base_path / filename).resolve()
+    output_path = _build_output_path(base_path, "csv")
 
     with open(output_path, 'w', newline='', encoding="utf-8") as file:
         writer = csv.writer(file, delimiter=',')
         writer.writerow([f.name for f in fields(MarketTransaction)])
-        writer.writerows([asdict(x).values() for x in market_transactions])
+        writer.writerows([asdict(t).values() for t in market_transactions])
 
     console.print(f"{CHECKMARK} CSV exported: [bold]{output_path}[/bold]", highlight=False)
 
 
 def to_html(market_transactions: list[MarketTransaction], base_path: Path) -> None:
-    filename = f"{base_name}-{uuid.uuid4()}.html"
-    output_path = (base_path / filename).resolve()
+    output_path = _build_output_path(base_path, "html")
 
     with open(Path(__file__).parent.parent / "templates/index.html", encoding="utf-8") as template_file:
         template = Template(template_file.read(), autoescape=select_autoescape())
@@ -43,8 +45,7 @@ def to_html(market_transactions: list[MarketTransaction], base_path: Path) -> No
 
 
 def to_json(market_transactions: list[MarketTransaction], base_path: Path) -> None:
-    filename = f"{base_name}-{uuid.uuid4()}.json"
-    output_path = (base_path / filename).resolve()
+    output_path = _build_output_path(base_path, "json")
 
     wrapper = {
         "data": [asdict(t) for t in market_transactions]
