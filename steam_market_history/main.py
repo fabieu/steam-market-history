@@ -1,11 +1,7 @@
-# Built-in modules
-from pathlib import Path
 import pickle
-
-# PyPi modules
 import typer
+from pathlib import Path
 
-# Local modules
 from steam_market_history import __version__, __metadata__
 from steam_market_history.modules import steam, exporter
 
@@ -31,9 +27,7 @@ def export(
         export_json: bool = typer.Option(False, "--json", help="Generate steam market history as json file"),
         path: Path = typer.Option(Path.cwd(), help="Path for file export"),
         launch: bool = typer.Option(True, help="Automatically open file(s) after export"),
-        cache: bool = typer.Option(False, help="Cache market transactions. Use with caution!"),
-        interactive: bool = typer.Option(True, "--interactive/--non-interactive",
-                                         help="Interactive or non-interactive steam authentication")
+        cache: bool = typer.Option(False, help="Cache market transactions. Use with caution!")
 ):
     """
     Export your entire steam market history to a csv or html file. For more information use 'steam-market-history
@@ -49,10 +43,7 @@ def export(
         raise typer.Exit(1)
 
     # Login to steam
-    if interactive:
-        steam_session = steam.login_cli()
-    else:
-        steam_session = steam.login_non_interactive()
+    steam_session = steam.login_cli()
 
     # TODO: Improve caching mechanism (maybe use cachetools?)
     if cache:

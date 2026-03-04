@@ -1,12 +1,9 @@
-# Build-in modules
 import csv
 import json
-from datetime import datetime
-from pathlib import Path
-
-# PyPi modules
-from jinja2 import Template, select_autoescape
 import typer
+from datetime import datetime
+from jinja2 import Template, select_autoescape
+from pathlib import Path
 
 # Global variables
 base_name = "steam-market-history"

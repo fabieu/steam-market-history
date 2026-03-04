@@ -1,37 +1,23 @@
-# Build-in modules
 import json
-import os
 import re
 
-# PyPi modules
-from bs4 import BeautifulSoup
+import requests
 import steam.webauth as wa
 import typer
+from bs4 import BeautifulSoup
 
 app = typer.Typer()
 
 
-def login_cli() -> wa.WebAuth:
+def login_cli() -> requests.Session:
     """
-    Login to Steam via CLI and return the authenticated websession
+    Login to Steam via CLI and return the authenticated web session
     """
     username = typer.prompt("Enter Steam username")
     return wa.WebAuth(username).cli_login()
 
 
-def login_non_interactive() -> wa.WebAuth:
-    """
-    Login to Steam with username password, email_code and twofactor_code and return the authenticated websession
-    """
-    username = os.getenv("STEAM_USERNAME")
-    password = os.getenv("STEAM_PASSWORD")
-    email_code = os.getenv("STEAM_EMAIL_CODE")
-    twofactor_code = os.getenv("STEAM_TWOFACTOR_CODE")
-    return wa.WebAuth(username).login(password=password, email_code=email_code,
-                                      twofactor_code=twofactor_code)
-
-
-def fetch_market_history(steam_session: wa.WebAuth) -> list:
+def fetch_market_history(session: requests.Session) -> list:
     """
     Fetch market history from Steam returns an array containing all market listings
     """
@@ -45,7 +31,7 @@ def fetch_market_history(steam_session: wa.WebAuth) -> list:
     total_count = 1
 
     while start < total_count:
-        page = steam_session.get(f'https://steamcommunity.com/market/myhistory/render/?count={count}&start={start}')
+        page = session.get(f'https://steamcommunity.com/market/myhistory/render/?count={count}&start={start}')
         page_content = json.loads(page.content)
 
         # Process market history with the BeautifulSoup library
