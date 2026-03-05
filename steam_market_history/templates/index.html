@@ -21,26 +21,51 @@
             vertical-align: middle;
         }
 
-        .summary {
-            margin-bottom: 1rem;
+        #steam-table tbody tr:hover {
+            background-color: rgba(0, 0, 0, 0.04);
         }
 
-        .summary h1 {
-            font-size: 1.5em;
+        #steam-table td.price {
+            font-family: monospace;
+            text-align: right;
+            white-space: nowrap;
         }
 
-        .summary div span {
-            font-weight: bold;
+        #steam-table td img {
+            width: 48px;
+            height: 48px;
+            object-fit: contain;
         }
 
-        #steam-table .item-bought {
-            font-weight: bold;
-            color: red;
+        .summary-cards {
+            display: flex;
+            gap: 1rem;
+            justify-content: center;
+            flex-wrap: wrap;
+            margin-bottom: 2rem;
         }
 
-        #steam-table .item-sold {
-            font-weight: bold;
-            color: green;
+        .summary-card {
+            background: #f8f9fa;
+            border: 1px solid #dee2e6;
+            border-radius: 8px;
+            padding: 1rem 1.5rem;
+            min-width: 160px;
+            text-align: center;
+        }
+
+        .summary-card .label {
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            color: #6c757d;
+            margin-bottom: 0.25rem;
+        }
+
+        .summary-card .value {
+            font-size: 1.25rem;
+            font-weight: 600;
+            font-family: monospace;
         }
 
         .form-control {
@@ -77,16 +102,26 @@
     <div class="text-center mt-5">
         <h1>Steam Market History Export</h1>
 
-        <p class="lead mb-4">Search and filter data in your steam market history</p>
-
-        <div class="summary row justify-content-evenly">
-            <div class="col-3"><span>Total transactions:</span> {{ summary.totalTransactions }}</div>
-            <div class="col-3"><span>Total purchased:</span> -{{ summary.totalPurchases }}</div>
-            <div class="col-3"><span>Total sold:</span> +{{ summary.totalSales }}</div>
-            <div class="col-3"><span>Net gain/loss:</span> {{ summary.net }}</div>
+        <div class="summary-cards">
+            <div class="summary-card">
+                <div class="label">Transactions</div>
+                <div class="value">{{ summary.totalTransactions }}</div>
+            </div>
+            <div class="summary-card">
+                <div class="label">Total purchased</div>
+                <div class="value text-danger">-{{ summary.totalPurchases }}</div>
+            </div>
+            <div class="summary-card">
+                <div class="label">Total sold</div>
+                <div class="value text-success">+{{ summary.totalSales }}</div>
+            </div>
+            <div class="summary-card">
+                <div class="label">Net gain/loss</div>
+                <div class="value {% if summary.net.startswith('+') %}text-success{% else %}text-danger{% endif %}">{{ summary.net }}</div>
+            </div>
         </div>
 
-        <table class="table" id="steam-table">
+        <table class="table table-hover" id="steam-table">
             <thead class="table-dark">
             <tr>
                 <th scope="col"></th>
@@ -94,7 +129,7 @@
                 <th scope="col">Game</th>
                 <th scope="col">Date listed</th>
                 <th scope="col">Transaction</th>
-                <th scope="col">Price</th>
+                <th scope="col" class="text-end">Price</th>
             </tr>
             </thead>
             <tbody>
@@ -103,15 +138,18 @@
                     <td><img src="{{ item.image_url }}" /></td>
                     <td>{{ item.item_name }}</td>
                     <td>{{ item.game_name }}</td>
-                    <td>{{ item.listed_date }}</td>
+                    <td>{{ item.listed_date | format_date }}</td>
                     {% if item.gain_or_loss == '+' %}
-                        <td class="item-bought">PURCHASED</td>
+                        <td><span class="badge bg-danger">Purchased</span></td>
                     {% elif item.gain_or_loss == '-' %}
-                        <td class="item-sold">SOLD</td>
+                        <td><span class="badge bg-success">Sold</span></td>
                     {% endif %}
-                    <td>
-                        {% if item.gain_or_loss == '+' %} -{{ item.price }} {% elif item.gain_or_loss == '-' %}
-                            +{{ item.price }} {% endif %}
+                    <td class="price">
+                        {% if item.gain_or_loss == '+' %}
+                            <span class="text-danger">-{{ item.price }}</span>
+                        {% elif item.gain_or_loss == '-' %}
+                            <span class="text-success">+{{ item.price }}</span>
+                        {% endif %}
                     </td>
                 </tr>
             {% endfor %}

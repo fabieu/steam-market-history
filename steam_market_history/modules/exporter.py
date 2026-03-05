@@ -6,7 +6,7 @@ from dataclasses import asdict, fields
 from datetime import datetime
 from pathlib import Path
 
-from jinja2 import Template, select_autoescape
+from jinja2 import Environment, FileSystemLoader, select_autoescape
 
 from steam_market_history.console import CHECKMARK, console
 from steam_market_history.models import MarketTransaction
@@ -32,6 +32,16 @@ def _parse_price(price: str | None) -> float:
         return 0.0
 
 
+def _format_date(date: str | None) -> str:
+    if not date:
+        return ''
+    try:
+        dt = datetime.strptime(date.strip(), '%d %b')
+        return f"{dt.day}. {dt.strftime('%B')}"
+    except ValueError:
+        return date or ''
+
+
 def _extract_currency(transactions: list[MarketTransaction]) -> str:
     for t in transactions:
         if t.price:
@@ -55,8 +65,12 @@ def to_csv(market_transactions: list[MarketTransaction], base_path: Path) -> Non
 def to_html(market_transactions: list[MarketTransaction], base_path: Path) -> None:
     output_path = _build_output_path(base_path, "html")
 
-    with open(Path(__file__).parent.parent / "templates/index.html", encoding="utf-8") as template_file:
-        template = Template(template_file.read(), autoescape=select_autoescape())
+    env = Environment(
+        loader=FileSystemLoader(Path(__file__).parent.parent / "templates"),
+        autoescape=select_autoescape(),
+    )
+    env.filters['format_date'] = _format_date
+    template = env.get_template("index.html")
 
     with open(output_path, 'w', encoding="utf-8") as rendered_file:
         current_date = datetime.now().strftime("%d.%m.%Y %H:%M")
