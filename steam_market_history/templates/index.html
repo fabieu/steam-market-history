@@ -6,15 +6,14 @@
     <meta name="description" content="" />
     <meta name="author" content="" />
     <title>Steam Market History Export</title>
-    <link
-            rel="stylesheet"
-            href="https://cdn.jsdelivr.net/npm/bootstrap@5/dist/css/bootstrap.min.css"
-    />
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5/dist/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css" />
 
     <!-- Core theme CSS -->
     <style>
         #steam-table thead th {
             vertical-align: middle;
+            border-bottom: 2px solid #dee2e6;
         }
 
         #steam-table tbody td {
@@ -68,39 +67,23 @@
             font-family: monospace;
         }
 
-        .form-control {
-            margin-bottom: 5px;
+        #steam-table thead .filter-row {
+            background-color: #fff;
         }
 
-        .form-control:focus {
-            border: 1px solid #ced4da;
-            border-bottom: 3px solid #212529;
+        #steam-table thead .filter-row th {
+            padding: 0.4rem 0.5rem;
+            vertical-align: top;
         }
+
     </style>
 </head>
 
 <body>
-<!-- Responsive navbar-->
-<nav class="navbar sticky-top navbar-expand-lg navbar-dark bg-dark">
-    <div class="container">
-        <a class="navbar-brand" href="./">Steam Market History - {{ current_date }}</a>
-        <button
-                class="navbar-toggler"
-                type="button"
-                data-bs-toggle="collapse"
-                data-bs-target="#navbarSupportedContent"
-                aria-controls="navbarSupportedContent"
-                aria-expanded="false"
-                aria-label="Toggle navigation"
-        >
-            <span class="navbar-toggler-icon"></span>
-        </button>
-    </div>
-</nav>
-<!-- Page content-->
 <div class="container">
     <div class="text-center mt-5">
         <h1>Steam Market History Export</h1>
+        <p><span class="badge text-bg-secondary">{{ current_date }}</span></p>
 
         <div class="summary-cards">
             <div class="summary-card">
@@ -124,17 +107,45 @@
         <table class="table table-hover" id="steam-table">
             <thead class="table-dark">
             <tr>
-                <th scope="col"></th>
-                <th scope="col">Item</th>
-                <th scope="col">Game</th>
-                <th scope="col">Date listed</th>
-                <th scope="col">Transaction</th>
-                <th scope="col" class="text-end">Price</th>
+                <th scope="col" class="text-center"></th>
+                <th scope="col" class="text-center">Item</th>
+                <th scope="col" class="text-center">Game</th>
+                <th scope="col" class="text-center">Date listed</th>
+                <th scope="col" class="text-center">Transaction</th>
+                <th scope="col" class="text-center">Price</th>
+            </tr>
+            <tr class="filter-row">
+                <th><button id="btn-clear-filters" class="btn btn-outline-secondary btn-sm" title="Clear filters">✕</button></th>
+                <th>
+                    <input type="text" id="filter-item" class="form-control form-control-sm" placeholder="Search item...">
+                </th>
+                <th>
+                    <input type="text" id="filter-game" class="form-control form-control-sm" placeholder="Search game...">
+                </th>
+                <th>
+                    <input type="text" id="filter-date-from" class="form-control form-control-sm mb-1" placeholder="From...">
+                    <input type="text" id="filter-date-to" class="form-control form-control-sm" placeholder="To...">
+                </th>
+                <th>
+                    <select id="filter-transaction" class="form-select form-select-sm">
+                        <option value="">All</option>
+                        <option value="purchased">Purchased</option>
+                        <option value="sold">Sold</option>
+                    </select>
+                </th>
+                <th>
+                    <input type="number" id="filter-price-min" class="form-control form-control-sm mb-1" placeholder="Min" step="0.01" min="0">
+                    <input type="number" id="filter-price-max" class="form-control form-control-sm" placeholder="Max" step="0.01" min="0">
+                </th>
             </tr>
             </thead>
             <tbody>
             {% for item in transactions %}
-                <tr>
+                <tr data-item="{{ item.item_name | lower }}"
+                        data-game="{{ item.game_name | lower }}"
+                        data-transaction="{{ 'purchased' if item.gain_or_loss == '+' else 'sold' }}"
+                        data-price="{{ item.price | parse_price }}"
+                        data-date="{{ item.listed_date | date_sort_value }}">
                     <td><img src="{{ item.image_url }}" /></td>
                     <td>{{ item.item_name }}</td>
                     <td>{{ item.game_name }}</td>
@@ -159,89 +170,86 @@
 </div>
 
 <!-- CDN JS-->
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5/dist/js/bootstrap.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/jquery@3/dist/jquery.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5/dist/js/bootstrap.bundle.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
 
-<!-- JQuery Plugins-->
 <script>
-    (function ($) {
-        "use strict";
-
-        function delay(callback, ms) {
-            var timer = 0;
-            return function () {
-                var context = this,
-                    args = arguments;
-                clearTimeout(timer);
-                timer = setTimeout(function () {
-                    callback.apply(context, args);
-                }, ms || 0);
-            };
-        }
-
-        function setUpOptions(options) {
-            const placeholderConst = "Enter a search term";
-            var defaultOptions = options || {
-                placeholder: placeholderConst,
-                filterTrClass: "",
-            };
-            if (defaultOptions.placeholder === undefined)
-                defaultOptions.placeholder = placeholderConst;
-            if (defaultOptions.filterTrClass === undefined) defaultOptions.filterTrClass = "";
-            return defaultOptions;
-        }
-
-        var searchTable = function (table, options) {
-            this.setUp = function () {
-                var defaultOptions = setUpOptions(options);
-                var inputSearch = $("<input>", {
-                    type: "text",
-                    class: "form-control shadow-none",
-                    placeholder: defaultOptions.placeholder,
-                });
-                var spanSearch = $("<span>", {
-                    class: "add-on",
-                }).append(
-                    $("<i>", {
-                        class: "icon icon-search",
-                    })
-                );
-                var divSearch = $("<div>", {
-                    class: "row-fluid input-append",
-                });
-                divSearch.append(inputSearch).append(spanSearch);
-                $(table).before(divSearch);
-                var $rows = $(table).find("tbody tr" + defaultOptions.filterTrClass);
-
-                inputSearch.keyup(
-                    delay(function (e) {
-                        if (typeof defaultOptions.before === "function") defaultOptions.before();
-                        var val = "^(?=.*" + $.trim($(this).val()).split(/\s+/).join(")(?=.*") + ").*$",
-                            reg = RegExp(val, "i"),
-                            text;
-                        $rows
-                            .show()
-                            .filter(function () {
-                                text = $(this).text().replace(/\s+/g, " ");
-                                return !reg.test(text);
-                            })
-                            .hide();
-                    }, 500)
-                );
-            };
-        };
-        $.fn.searchTable = function (options) {
-            var st = new searchTable(this, options);
-            st.setUp();
-        };
-    })(jQuery);
-</script>
-
-<!-- Core theme JS-->
-<script>
-    $("#steam-table").searchTable({
-        placeholder: "Search entire table...",
+    const dateFromPicker = flatpickr('#filter-date-from', {
+        dateFormat: 'j. F',
+        onChange: applyFilters,
     });
+    const dateToPicker = flatpickr('#filter-date-to', {
+        dateFormat: 'j. F',
+        onChange: applyFilters,
+    });
+
+    document.getElementById('btn-clear-filters').addEventListener('click', () => {
+        document.getElementById('filter-item').value = '';
+        document.getElementById('filter-game').value = '';
+        document.getElementById('filter-transaction').value = '';
+        document.getElementById('filter-price-min').value = '';
+        document.getElementById('filter-price-max').value = '';
+        dateFromPicker.clear();
+        dateToPicker.clear();
+        applyFilters();
+    });
+
+    document.getElementById('filter-item').addEventListener('input', applyFilters);
+    document.getElementById('filter-game').addEventListener('input', applyFilters);
+    document.getElementById('filter-transaction').addEventListener('change', applyFilters);
+    document.getElementById('filter-price-min').addEventListener('input', applyFilters);
+    document.getElementById('filter-price-max').addEventListener('input', applyFilters);
+
+    function toMonthDay(date) {
+        return (date.getMonth() + 1) * 100 + date.getDate();
+    }
+
+    function applyFilters() {
+        const itemFilter = document.getElementById('filter-item').value.toLowerCase().trim();
+        const gameFilter = document.getElementById('filter-game').value.toLowerCase().trim();
+        const transactionFilter = document.getElementById('filter-transaction').value;
+        const priceMinEl = document.getElementById('filter-price-min');
+        const priceMaxEl = document.getElementById('filter-price-max');
+        const priceMin = priceMinEl.value !== '' ? parseFloat(priceMinEl.value) : null;
+        const priceMax = priceMaxEl.value !== '' ? parseFloat(priceMaxEl.value) : null;
+        const dateFrom = dateFromPicker.selectedDates[0] || null;
+        const dateTo = dateToPicker.selectedDates[0] || null;
+        const fromVal = dateFrom ? toMonthDay(dateFrom) : null;
+        const toVal = dateTo ? toMonthDay(dateTo) : null;
+
+        document.querySelectorAll('#steam-table tbody tr').forEach(row => {
+            const item = row.dataset.item;
+            const game = row.dataset.game;
+            const transaction = row.dataset.transaction;
+            const price = parseFloat(row.dataset.price);
+            const dateVal = parseInt(row.dataset.date);
+
+            let visible = true;
+
+            if (itemFilter && !item.includes(itemFilter)) visible = false;
+            if (gameFilter && !game.includes(gameFilter)) visible = false;
+            if (transactionFilter && transaction !== transactionFilter) visible = false;
+            if (priceMin !== null && price < priceMin) visible = false;
+            if (priceMax !== null && price > priceMax) visible = false;
+
+            if (fromVal !== null || toVal !== null) {
+                if (fromVal !== null && toVal !== null) {
+                    if (fromVal <= toVal) {
+                        if (dateVal < fromVal || dateVal > toVal) visible = false;
+                    } else {
+                        // Year-wrapping range (e.g. Nov → Feb)
+                        if (dateVal < fromVal && dateVal > toVal) visible = false;
+                    }
+                } else if (fromVal !== null && dateVal < fromVal) {
+                    visible = false;
+                } else if (toVal !== null && dateVal > toVal) {
+                    visible = false;
+                }
+            }
+
+            row.style.display = visible ? '' : 'none';
+        });
+    }
 </script>
 </body>
 </html>

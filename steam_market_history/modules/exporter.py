@@ -20,6 +20,7 @@ def _build_output_path(base_path: Path, extension: str) -> Path:
 
 
 def _parse_price(price: str | None) -> float:
+    """Jinja filter. Strips currency symbols and normalises decimal separators, returning a float."""
     if not price:
         return 0.0
 
@@ -33,13 +34,28 @@ def _parse_price(price: str | None) -> float:
 
 
 def _format_date(date: str | None) -> str:
+    """Jinja filter. Converts Steam's short date (e.g. '17 Jan') to English ordinal format (e.g. '17th January')."""
     if not date:
         return ''
     try:
         dt = datetime.strptime(date.strip(), '%d %b')
-        return f"{dt.day}. {dt.strftime('%B')}"
+        day = dt.day
+        suffix = 'th' if 11 <= day % 100 <= 13 else ['th', 'st', 'nd', 'rd', 'th'][min(day % 10, 4)]
+        return f"{day}{suffix} {dt.strftime('%B')}"
     except ValueError:
-        return date or ''
+        return date
+
+
+def _date_sort_value(date: str | None) -> int:
+    """Jinja filter. Converts Steam's short date (e.g. '17 Jan') to a month*100+day integer (e.g. 117),
+    stored as a data attribute on each table row so the JS date range filter can compare dates numerically."""
+    if not date:
+        return 0
+    try:
+        dt = datetime.strptime(date.strip(), '%d %b')
+        return dt.month * 100 + dt.day
+    except ValueError:
+        return 0
 
 
 def _extract_currency(transactions: list[MarketTransaction]) -> str:
@@ -70,6 +86,8 @@ def to_html(market_transactions: list[MarketTransaction], base_path: Path) -> No
         autoescape=select_autoescape(),
     )
     env.filters['format_date'] = _format_date
+    env.filters['date_sort_value'] = _date_sort_value
+    env.filters['parse_price'] = _parse_price
     template = env.get_template("index.html")
 
     with open(output_path, 'w', encoding="utf-8") as rendered_file:
