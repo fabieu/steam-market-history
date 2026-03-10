@@ -193,8 +193,8 @@
         const transactionFilter = document.getElementById('filter-transaction').value;
         const priceMinEl = document.getElementById('filter-price-min');
         const priceMaxEl = document.getElementById('filter-price-max');
-        const priceMin = priceMinEl.value !== '' ? Number.parseFloat(priceMinEl.value) : null;
-        const priceMax = priceMaxEl.value !== '' ? Number.parseFloat(priceMaxEl.value) : null;
+        const priceMin = priceMinEl.value === '' ? null : Number.parseFloat(priceMinEl.value);
+        const priceMax = priceMaxEl.value === '' ? null : Number.parseFloat(priceMaxEl.value);
 
         document.querySelectorAll('#steam-table tbody tr').forEach(row => {
             const item = row.dataset.item;
