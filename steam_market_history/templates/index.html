@@ -115,22 +115,22 @@
                 <th scope="col" class="text-center">Transaction</th>
             </tr>
             <tr class="filter-row">
-                <th>
+                <th scope="col">
                     <button id="btn-clear-filters" class="btn btn-outline-secondary btn-sm" title="Clear filters">✕
                     </button>
                 </th>
-                <th>
+                <th scope="col">
                     <input type="text" id="filter-item" class="form-control form-control-sm" placeholder="Search item...">
                 </th>
-                <th>
+                <th scope="col">
                     <input type="text" id="filter-game" class="form-control form-control-sm" placeholder="Search game...">
                 </th>
-                <th></th>
-                <th>
+                <th scope="col"></th>
+                <th scope="col">
                     <input type="number" id="filter-price-min" class="form-control form-control-sm mb-1" placeholder="Min" step="0.01" min="0">
                     <input type="number" id="filter-price-max" class="form-control form-control-sm" placeholder="Max" step="0.01" min="0">
                 </th>
-                <th>
+                <th scope="col">
                     <select id="filter-transaction" class="form-select form-select-sm">
                         <option value="">All</option>
                         <option value="purchased">Purchased</option>
@@ -193,14 +193,14 @@
         const transactionFilter = document.getElementById('filter-transaction').value;
         const priceMinEl = document.getElementById('filter-price-min');
         const priceMaxEl = document.getElementById('filter-price-max');
-        const priceMin = priceMinEl.value !== '' ? parseFloat(priceMinEl.value) : null;
-        const priceMax = priceMaxEl.value !== '' ? parseFloat(priceMaxEl.value) : null;
+        const priceMin = priceMinEl.value !== '' ? Number.parseFloat(priceMinEl.value) : null;
+        const priceMax = priceMaxEl.value !== '' ? Number.parseFloat(priceMaxEl.value) : null;
 
         document.querySelectorAll('#steam-table tbody tr').forEach(row => {
             const item = row.dataset.item;
             const game = row.dataset.game;
             const transaction = row.dataset.transaction;
-            const price = parseFloat(row.dataset.price);
+            const price = Number.parseFloat(row.dataset.price);
 
             let visible = true;
 
