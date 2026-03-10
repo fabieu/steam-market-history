@@ -83,7 +83,7 @@
 <div class="container">
     <div class="text-center mt-5">
         <h1>Steam Market History Export</h1>
-        <p><span class="badge text-bg-secondary">{{ current_date }}</span></p>
+        <p><span class="badge text-bg-secondary fs-6">{{ current_date }}</span></p>
 
         <div class="summary-cards">
             <div class="summary-card">
@@ -157,9 +157,9 @@
                         {% endif %}
                     </td>
                     {% if item.gain_or_loss == '+' %}
-                        <td><span class="badge bg-danger">Purchased</span></td>
+                        <td><span class="badge bg-danger fs-6">Purchased</span></td>
                     {% elif item.gain_or_loss == '-' %}
-                        <td><span class="badge bg-success">Sold</span></td>
+                        <td><span class="badge bg-success fs-6">Sold</span></td>
                     {% endif %}
                 </tr>
             {% endfor %}
