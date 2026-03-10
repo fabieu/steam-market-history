@@ -7,7 +7,6 @@
     <meta name="author" content="" />
     <title>Steam Market History Export</title>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5/dist/css/bootstrap.min.css" />
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css" />
 
     <!-- Core theme CSS -->
     <style>
@@ -73,7 +72,8 @@
 
         #steam-table thead .filter-row th {
             padding: 0.4rem 0.5rem;
-            vertical-align: top;
+            vertical-align: middle;
+            text-align: center;
         }
 
     </style>
@@ -104,27 +104,31 @@
             </div>
         </div>
 
-        <table class="table table-hover" id="steam-table">
+        <table class="table table-hover table-striped table-bordered" id="steam-table">
             <thead class="table-dark">
             <tr>
                 <th scope="col" class="text-center"></th>
                 <th scope="col" class="text-center">Item</th>
                 <th scope="col" class="text-center">Game</th>
                 <th scope="col" class="text-center">Date listed</th>
-                <th scope="col" class="text-center">Transaction</th>
                 <th scope="col" class="text-center">Price</th>
+                <th scope="col" class="text-center">Transaction</th>
             </tr>
             <tr class="filter-row">
-                <th><button id="btn-clear-filters" class="btn btn-outline-secondary btn-sm" title="Clear filters">✕</button></th>
+                <th>
+                    <button id="btn-clear-filters" class="btn btn-outline-secondary btn-sm" title="Clear filters">✕
+                    </button>
+                </th>
                 <th>
                     <input type="text" id="filter-item" class="form-control form-control-sm" placeholder="Search item...">
                 </th>
                 <th>
                     <input type="text" id="filter-game" class="form-control form-control-sm" placeholder="Search game...">
                 </th>
+                <th></th>
                 <th>
-                    <input type="text" id="filter-date-from" class="form-control form-control-sm mb-1" placeholder="From...">
-                    <input type="text" id="filter-date-to" class="form-control form-control-sm" placeholder="To...">
+                    <input type="number" id="filter-price-min" class="form-control form-control-sm mb-1" placeholder="Min" step="0.01" min="0">
+                    <input type="number" id="filter-price-max" class="form-control form-control-sm" placeholder="Max" step="0.01" min="0">
                 </th>
                 <th>
                     <select id="filter-transaction" class="form-select form-select-sm">
@@ -133,10 +137,6 @@
                         <option value="sold">Sold</option>
                     </select>
                 </th>
-                <th>
-                    <input type="number" id="filter-price-min" class="form-control form-control-sm mb-1" placeholder="Min" step="0.01" min="0">
-                    <input type="number" id="filter-price-max" class="form-control form-control-sm" placeholder="Max" step="0.01" min="0">
-                </th>
             </tr>
             </thead>
             <tbody>
@@ -144,17 +144,11 @@
                 <tr data-item="{{ item.item_name | lower }}"
                         data-game="{{ item.game_name | lower }}"
                         data-transaction="{{ 'purchased' if item.gain_or_loss == '+' else 'sold' }}"
-                        data-price="{{ item.price | parse_price }}"
-                        data-date="{{ item.listed_date | date_sort_value }}">
+                        data-price="{{ item.price | parse_price }}">
                     <td><img src="{{ item.image_url }}" /></td>
                     <td>{{ item.item_name }}</td>
                     <td>{{ item.game_name }}</td>
                     <td>{{ item.listed_date | format_date }}</td>
-                    {% if item.gain_or_loss == '+' %}
-                        <td><span class="badge bg-danger">Purchased</span></td>
-                    {% elif item.gain_or_loss == '-' %}
-                        <td><span class="badge bg-success">Sold</span></td>
-                    {% endif %}
                     <td class="price">
                         {% if item.gain_or_loss == '+' %}
                             <span class="text-danger">-{{ item.price }}</span>
@@ -162,6 +156,11 @@
                             <span class="text-success">+{{ item.price }}</span>
                         {% endif %}
                     </td>
+                    {% if item.gain_or_loss == '+' %}
+                        <td><span class="badge bg-danger">Purchased</span></td>
+                    {% elif item.gain_or_loss == '-' %}
+                        <td><span class="badge bg-success">Sold</span></td>
+                    {% endif %}
                 </tr>
             {% endfor %}
             </tbody>
@@ -171,26 +170,14 @@
 
 <!-- CDN JS-->
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5/dist/js/bootstrap.bundle.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
 
 <script>
-    const dateFromPicker = flatpickr('#filter-date-from', {
-        dateFormat: 'j. F',
-        onChange: applyFilters,
-    });
-    const dateToPicker = flatpickr('#filter-date-to', {
-        dateFormat: 'j. F',
-        onChange: applyFilters,
-    });
-
     document.getElementById('btn-clear-filters').addEventListener('click', () => {
         document.getElementById('filter-item').value = '';
         document.getElementById('filter-game').value = '';
         document.getElementById('filter-transaction').value = '';
         document.getElementById('filter-price-min').value = '';
         document.getElementById('filter-price-max').value = '';
-        dateFromPicker.clear();
-        dateToPicker.clear();
         applyFilters();
     });
 
@@ -200,10 +187,6 @@
     document.getElementById('filter-price-min').addEventListener('input', applyFilters);
     document.getElementById('filter-price-max').addEventListener('input', applyFilters);
 
-    function toMonthDay(date) {
-        return (date.getMonth() + 1) * 100 + date.getDate();
-    }
-
     function applyFilters() {
         const itemFilter = document.getElementById('filter-item').value.toLowerCase().trim();
         const gameFilter = document.getElementById('filter-game').value.toLowerCase().trim();
@@ -212,17 +195,12 @@
         const priceMaxEl = document.getElementById('filter-price-max');
         const priceMin = priceMinEl.value !== '' ? parseFloat(priceMinEl.value) : null;
         const priceMax = priceMaxEl.value !== '' ? parseFloat(priceMaxEl.value) : null;
-        const dateFrom = dateFromPicker.selectedDates[0] || null;
-        const dateTo = dateToPicker.selectedDates[0] || null;
-        const fromVal = dateFrom ? toMonthDay(dateFrom) : null;
-        const toVal = dateTo ? toMonthDay(dateTo) : null;
 
         document.querySelectorAll('#steam-table tbody tr').forEach(row => {
             const item = row.dataset.item;
             const game = row.dataset.game;
             const transaction = row.dataset.transaction;
             const price = parseFloat(row.dataset.price);
-            const dateVal = parseInt(row.dataset.date);
 
             let visible = true;
 
@@ -231,21 +209,6 @@
             if (transactionFilter && transaction !== transactionFilter) visible = false;
             if (priceMin !== null && price < priceMin) visible = false;
             if (priceMax !== null && price > priceMax) visible = false;
-
-            if (fromVal !== null || toVal !== null) {
-                if (fromVal !== null && toVal !== null) {
-                    if (fromVal <= toVal) {
-                        if (dateVal < fromVal || dateVal > toVal) visible = false;
-                    } else {
-                        // Year-wrapping range (e.g. Nov → Feb)
-                        if (dateVal < fromVal && dateVal > toVal) visible = false;
-                    }
-                } else if (fromVal !== null && dateVal < fromVal) {
-                    visible = false;
-                } else if (toVal !== null && dateVal > toVal) {
-                    visible = false;
-                }
-            }
 
             row.style.display = visible ? '' : 'none';
         });
