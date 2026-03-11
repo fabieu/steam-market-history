@@ -19,12 +19,21 @@ def _build_output_path(base_path: Path, extension: str) -> Path:
     return (base_path / f"{base_name}-{uuid.uuid4()}.{extension}").resolve()
 
 
+def _normalize_price(price: str | None) -> str:
+    """Jinja filter. Replaces dash-based decimal notation (e.g. ',-' / ',--') with ',00' for display."""
+    if not price:
+        return ''
+
+    return re.sub(r',-+', ',00', price)
+
+
 def _parse_price(price: str | None) -> float:
     """Jinja filter. Strips currency symbols and normalises decimal separators, returning a float."""
     if not price:
         return 0.0
 
-    cleaned = re.sub(r'[^\d,.]', '', price.strip())
+    cleaned = _normalize_price(price).strip()
+    cleaned = re.sub(r'[^\d,.]', '', cleaned)
     cleaned = cleaned.replace(',', '.')
 
     try:
@@ -46,25 +55,23 @@ def _format_date(date: str | None) -> str:
         return date
 
 
-def _date_sort_value(date: str | None) -> int:
-    """Jinja filter. Converts Steam's short date (e.g. '17 Jan') to a month*100+day integer (e.g. 117),
-    stored as a data attribute on each table row so the JS date range filter can compare dates numerically."""
-    if not date:
-        return 0
-    try:
-        dt = datetime.strptime(date.strip(), '%d %b')
-        return dt.month * 100 + dt.day
-    except ValueError:
-        return 0
-
-
-def _extract_currency(transactions: list[MarketTransaction]) -> str:
+def _extract_currency(transactions: list[MarketTransaction]) -> tuple[str, bool]:
+    """Returns (symbol, is_prefix). is_prefix is True when the symbol appears before the digits."""
     for t in transactions:
         if t.price:
             match = re.search(r'[^\d\s,.\-]', t.price)
             if match:
-                return match.group()
-    return ''
+                symbol = match.group()
+                is_prefix = t.price.strip().startswith(symbol)
+                return symbol, is_prefix
+    return '', False
+
+
+def _format_currency(amount: float, symbol: str, is_prefix: bool) -> str:
+    if is_prefix:
+        return f"{symbol}{amount:.2f}"
+    else:
+        return f"{amount:.2f}{symbol}"
 
 
 def to_csv(market_transactions: list[MarketTransaction], base_path: Path) -> None:
@@ -86,21 +93,22 @@ def to_html(market_transactions: list[MarketTransaction], base_path: Path) -> No
         autoescape=select_autoescape(),
     )
     env.filters['format_date'] = _format_date
-    env.filters['date_sort_value'] = _date_sort_value
+    env.filters['normalize_price'] = _normalize_price
     env.filters['parse_price'] = _parse_price
     template = env.get_template("index.html")
 
     with open(output_path, 'w', encoding="utf-8") as rendered_file:
         current_date = datetime.now().strftime("%d.%m.%Y %H:%M")
-        currency = _extract_currency(market_transactions)
+        currency, is_prefix = _extract_currency(market_transactions)
         total_purchases = round(sum(_parse_price(t.price) for t in market_transactions if t.gain_or_loss == '+'), 2)
         total_sales = round(sum(_parse_price(t.price) for t in market_transactions if t.gain_or_loss == '-'), 2)
         net = round(total_sales - total_purchases, 2)
+        net_sign = '+' if net >= 0 else '-'
         summary = {
             "totalTransactions": len(market_transactions),
-            "totalPurchases": f"{total_purchases:.2f}{currency}",
-            "totalSales": f"{total_sales:.2f}{currency}",
-            "net": f"{net:+.2f}{currency}",
+            "totalPurchases": _format_currency(total_purchases, currency, is_prefix),
+            "totalSales": _format_currency(total_sales, currency, is_prefix),
+            "net": f"{net_sign}{_format_currency(abs(net), currency, is_prefix)}",
         }
         rendered_file.write(template.render(
             summary=summary, transactions=market_transactions, current_date=current_date))

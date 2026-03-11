@@ -151,9 +151,9 @@
                     <td>{{ item.listed_date | format_date }}</td>
                     <td class="price">
                         {% if item.gain_or_loss == '+' %}
-                            <span class="text-danger">-{{ item.price }}</span>
+                            <span class="text-danger">-{{ item.price | normalize_price }}</span>
                         {% elif item.gain_or_loss == '-' %}
-                            <span class="text-success">+{{ item.price }}</span>
+                            <span class="text-success">+{{ item.price | normalize_price }}</span>
                         {% endif %}
                     </td>
                     {% if item.gain_or_loss == '+' %}
