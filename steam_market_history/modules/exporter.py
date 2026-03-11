@@ -105,7 +105,7 @@ def _extract_currency(transactions: list[MarketTransaction]) -> tuple[str, bool]
         if prefix_match:
             return prefix_match.group(1), True
 
-        suffix_match = re.search(r'([^\d\s,.]+)$', price)
+        suffix_match = re.fullmatch(r'[\d\s,.]*([^\d\s,.]+)', price)
         if suffix_match:
             return suffix_match.group(1), False
 
