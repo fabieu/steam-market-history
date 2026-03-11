@@ -1,13 +1,12 @@
 import json
-import re
 
 import requests
 import steam.webauth as wa
 import typer
 from bs4 import BeautifulSoup
 from rich.progress import BarColumn, MofNCompleteColumn, Progress, SpinnerColumn, TextColumn
-from steam_market_history.console import CHECKMARK
 
+from steam_market_history.console import CHECKMARK
 from steam_market_history.models import MarketTransaction
 
 app = typer.Typer()
@@ -60,34 +59,27 @@ def fetch_market_history(session: requests.Session) -> list[MarketTransaction]:
     market_listing_rows = document.find_all("div", class_="market_listing_row")
 
     for row in market_listing_rows:
-        price_element = row.find("span", class_="market_listing_price")
-        item_name_element = row.find("span", class_="market_listing_item_name")
-        game_name_element = row.find("span", class_="market_listing_game_name")
-        gain_or_loss_element = row.find("div", class_="market_listing_gainorloss")
-        listed_date_element = row.find("div", class_="market_listing_listed_date")
-        item_img_element = row.find("img", class_="market_listing_item_img")
-
-        price = price_element.text.strip() if price_element else None
-        item_name = item_name_element.text.strip() if item_name_element else None
-        game_name = game_name_element.text.strip() if game_name_element else None
-        gain_or_loss = gain_or_loss_element.text.strip() if gain_or_loss_element else None
-        listed_date = listed_date_element.text.strip() if listed_date_element else None
-        image_url = item_img_element.get("src") if item_img_element else None
-
-        # Format price of market listing item
-        if price and re.search(r"^\d+,(\d|-){2}$", price):
-            price = price.replace(",--", ".00").replace(",", ".")
-
-        # Format original steam data (market_listing_row) and add it to an array
-        if gain_or_loss in ["+", "-"]:
-            market_transaction = MarketTransaction(
-                game_name=game_name,
-                item_name=item_name,
-                listed_date=listed_date,
-                price=price,
-                gain_or_loss=gain_or_loss,
-                image_url=image_url,
-            )
-            market_transactions.append(market_transaction)
+        transaction = _parse_market_row(row)
+        if transaction:
+            market_transactions.append(transaction)
 
     return market_transactions
+
+
+def _parse_market_row(row) -> MarketTransaction | None:
+    def text(element) -> str | None:
+        return element.text.strip() if element else None
+
+    gain_or_loss = text(row.find("div", class_="market_listing_gainorloss"))
+    if gain_or_loss not in ["+", "-"]:
+        return None
+
+    item_img_element = row.find("img", class_="market_listing_item_img")
+    return MarketTransaction(
+        game_name=text(row.find("span", class_="market_listing_game_name")),
+        item_name=text(row.find("span", class_="market_listing_item_name")),
+        listed_date=text(row.find("div", class_="market_listing_listed_date")),
+        price=text(row.find("span", class_="market_listing_price")),
+        gain_or_loss=gain_or_loss,
+        image_url=item_img_element.get("src") if item_img_element else None,
+    )

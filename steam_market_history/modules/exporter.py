@@ -112,13 +112,19 @@ def _format_currency(amount: float, symbol: str, is_prefix: bool) -> str:
         return f"{amount:.2f}{symbol}"
 
 
+def _to_normalized_dict(t: MarketTransaction) -> dict:
+    d = asdict(t)
+    d['price'] = _normalize_price(d['price'])
+    return d
+
+
 def to_csv(market_transactions: list[MarketTransaction], base_path: Path) -> None:
     output_path = _build_output_path(base_path, "csv")
 
     with open(output_path, 'w', newline='', encoding="utf-8") as file:
         writer = csv.writer(file, delimiter=',')
         writer.writerow([f.name for f in fields(MarketTransaction)])
-        writer.writerows([asdict(t).values() for t in market_transactions])
+        writer.writerows([_to_normalized_dict(t).values() for t in market_transactions])
 
     console.print(f"{CHECKMARK} CSV exported: [bold]{output_path}[/bold]", highlight=False)
 
@@ -158,7 +164,7 @@ def to_json(market_transactions: list[MarketTransaction], base_path: Path) -> No
     output_path = _build_output_path(base_path, "json")
 
     wrapper = {
-        "data": [asdict(t) for t in market_transactions]
+        "data": [_to_normalized_dict(t) for t in market_transactions]
     }
 
     with open(output_path, 'w', encoding="utf-8") as file:

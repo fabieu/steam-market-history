@@ -41,7 +41,7 @@ def version():
     """
     Display package version, author, and license information.
     """
-    console.print(f"steam-market-history")
+    console.print("steam-market-history")
     console.print(f"Version: {__version__}")
     console.print(f"Author: {__metadata__.get('Author')}")
     console.print(f"License: {__metadata__.get('License')}")

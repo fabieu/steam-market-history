@@ -116,7 +116,8 @@
             </tr>
             <tr class="filter-row">
                 <th scope="col">
-                    <button id="btn-clear-filters" class="btn btn-outline-secondary btn-sm" title="Clear filters" aria-label="Clear filters">✕
+                    <button id="btn-clear-filters" class="btn btn-outline-secondary btn-sm" title="Clear filters" aria-label="Clear filters">
+                        ✕
                     </button>
                 </th>
                 <th scope="col">
@@ -145,7 +146,7 @@
                         data-game="{{ item.game_name | lower }}"
                         data-transaction="{{ 'purchased' if item.gain_or_loss == '+' else 'sold' }}"
                         data-price="{{ item.price | parse_price }}">
-                    <td><img src="{{ item.image_url }}" /></td>
+                    <td><img src="{{ item.image_url }}" alt="Item Image" /></td>
                     <td>{{ item.item_name }}</td>
                     <td>{{ item.game_name }}</td>
                     <td>{{ item.listed_date | format_date }}</td>
