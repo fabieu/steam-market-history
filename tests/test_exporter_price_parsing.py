@@ -1,3 +1,5 @@
+import math
+
 import pytest
 
 from steam_market_history.modules.exporter import _parse_price
@@ -17,8 +19,8 @@ from steam_market_history.modules.exporter import _parse_price
     ],
 )
 def test_parse_price_locale_and_currency_formats(raw_price: str, expected: float) -> None:
-    assert _parse_price(raw_price) == expected
+    assert math.isclose(_parse_price(raw_price), expected)
 
 
 def test_parse_price_invalid_returns_zero() -> None:
-    assert _parse_price("not-a-price") == 0.0
+    assert math.isclose(_parse_price("not-a-price"), 0.0)
