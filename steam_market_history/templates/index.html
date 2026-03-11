@@ -1,205 +1,219 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
+<head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
     <meta name="description" content="" />
     <meta name="author" content="" />
     <title>Steam Market History Export</title>
-    <link
-      rel="stylesheet"
-      href="https://cdn.jsdelivr.net/npm/bootstrap@5/dist/css/bootstrap.min.css"
-    />
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5/dist/css/bootstrap.min.css" />
 
     <!-- Core theme CSS -->
     <style>
-      #steam-table thead th {
-        vertical-align: middle;
-      }
+        #steam-table thead th {
+            vertical-align: middle;
+            border-bottom: 2px solid #dee2e6;
+        }
 
-      #steam-table tbody td {
-        vertical-align: middle;
-      }
+        #steam-table tbody td {
+            vertical-align: middle;
+        }
 
-      .summary {
-        margin-bottom: 1rem;
-      }
+        #steam-table tbody tr:hover {
+            background-color: rgba(0, 0, 0, 0.04);
+        }
 
-      .summary h1 {
-        font-size: 1.5em;
-      }
+        #steam-table td.price {
+            font-family: monospace;
+            text-align: right;
+            white-space: nowrap;
+        }
 
-      .summary div span {
-        font-weight: bold;
-      }
+        #steam-table td img {
+            width: 48px;
+            height: 48px;
+            object-fit: contain;
+        }
 
-      .item-bought {
-        font-weight: bold;
-        color: red;
-      }
+        .summary-cards {
+            display: flex;
+            gap: 1rem;
+            justify-content: center;
+            flex-wrap: wrap;
+            margin-bottom: 2rem;
+        }
 
-      .item-sold {
-        font-weight: bold;
-        color: green;
-      }
+        .summary-card {
+            background: #f8f9fa;
+            border: 1px solid #dee2e6;
+            border-radius: 8px;
+            padding: 1rem 1.5rem;
+            min-width: 160px;
+            text-align: center;
+        }
 
-      .form-control {
-        margin-bottom: 5px;
-      }
+        .summary-card .label {
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            color: #6c757d;
+            margin-bottom: 0.25rem;
+        }
 
-      .form-control:focus {
-        border: 1px solid #ced4da;
-        border-bottom: 3px solid #212529;
-      }
+        .summary-card .value {
+            font-size: 1.25rem;
+            font-weight: 600;
+            font-family: monospace;
+        }
+
+        #steam-table thead .filter-row {
+            background-color: #fff;
+        }
+
+        #steam-table thead .filter-row th {
+            padding: 0.4rem 0.5rem;
+            vertical-align: middle;
+            text-align: center;
+        }
+
     </style>
-  </head>
+</head>
 
-  <body>
-    <!-- Responsive navbar-->
-    <nav class="navbar sticky-top navbar-expand-lg navbar-dark bg-dark">
-      <div class="container">
-        <a class="navbar-brand" href="./">Steam Market History - {{current_date}}</a>
-        <button
-          class="navbar-toggler"
-          type="button"
-          data-bs-toggle="collapse"
-          data-bs-target="#navbarSupportedContent"
-          aria-controls="navbarSupportedContent"
-          aria-expanded="false"
-          aria-label="Toggle navigation"
-        >
-          <span class="navbar-toggler-icon"></span>
-        </button>
-      </div>
-    </nav>
-    <!-- Page content-->
-    <div class="container">
-      <div class="text-center mt-5">
+<body>
+<div class="container">
+    <div class="text-center mt-5">
         <h1>Steam Market History Export</h1>
+        <p><span class="badge text-bg-secondary fs-6">{{ current_date }}</span></p>
 
-        <p class="lead mb-4">Search and filter data in your steam market history</p>
-
-        <div class="summary row justify-content-evenly">
-          <div class="col-3"><span>Total transactions:</span> {{ summary.totalTransactions }}</div>
+        <div class="summary-cards">
+            <div class="summary-card">
+                <div class="label">Transactions</div>
+                <div class="value">{{ summary.totalTransactions }}</div>
+            </div>
+            <div class="summary-card">
+                <div class="label">Total purchased</div>
+                <div class="value text-danger">-{{ summary.totalPurchases }}</div>
+            </div>
+            <div class="summary-card">
+                <div class="label">Total sold</div>
+                <div class="value text-success">+{{ summary.totalSales }}</div>
+            </div>
+            <div class="summary-card">
+                <div class="label">Net gain/loss</div>
+                <div class="value {% if summary.net.startswith('+') %}text-success{% else %}text-danger{% endif %}">{{ summary.net }}</div>
+            </div>
         </div>
 
-        <table class="table" id="steam-table">
-          <thead class="table-dark">
+        <table class="table table-hover table-striped table-bordered" id="steam-table">
+            <thead class="table-dark">
             <tr>
-              <th scope="col"></th>
-              <th scope="col">Item</th>
-              <th scope="col">Game</th>
-              <th scope="col">Date listed</th>
-              <th scope="col">Transaction</th>
-              <th scope="col">Price</th>
+                <th scope="col" class="text-center"></th>
+                <th scope="col" class="text-center">Item</th>
+                <th scope="col" class="text-center">Game</th>
+                <th scope="col" class="text-center">Date listed</th>
+                <th scope="col" class="text-center">Price</th>
+                <th scope="col" class="text-center">Transaction</th>
             </tr>
-          </thead>
-          <tbody>
+            <tr class="filter-row">
+                <th scope="col">
+                    <button id="btn-clear-filters" class="btn btn-outline-secondary btn-sm" title="Clear filters" aria-label="Clear filters">
+                        ✕
+                    </button>
+                </th>
+                <th scope="col">
+                    <input type="text" id="filter-item" class="form-control form-control-sm" placeholder="Search item...">
+                </th>
+                <th scope="col">
+                    <input type="text" id="filter-game" class="form-control form-control-sm" placeholder="Search game...">
+                </th>
+                <th scope="col"></th>
+                <th scope="col">
+                    <input type="number" id="filter-price-min" class="form-control form-control-sm mb-1" placeholder="Min" step="0.01" min="0">
+                    <input type="number" id="filter-price-max" class="form-control form-control-sm" placeholder="Max" step="0.01" min="0">
+                </th>
+                <th scope="col">
+                    <select id="filter-transaction" class="form-select form-select-sm">
+                        <option value="">All</option>
+                        <option value="purchased">Purchased</option>
+                        <option value="sold">Sold</option>
+                    </select>
+                </th>
+            </tr>
+            </thead>
+            <tbody>
             {% for item in transactions %}
-            <tr>
-              <td><img src="{{ item.image_url }}" /></td>
-              <td>{{ item.item_name }}</td>
-              <td>{{ item.game_name }}</td>
-              <td>{{ item.listed_date }}</td>
-              {% if item.gain_or_loss == '+'%}
-              <td class="item-bought">purchased</td>
-              {% elif item.gain_or_loss == '-'%}
-              <td class="item-sold">sold</td>
-              {% endif %}
-              <td>
-                {% if item.gain_or_loss == '+'%} -{{ item.price }} {% elif item.gain_or_loss == '-'%}
-                +{{ item.price }} {% endif %}
-              </td>
-            </tr>
+                <tr data-item="{{ (item.item_name or '') | lower }}"
+                        data-game="{{ (item.game_name or '') | lower }}"
+                        data-transaction="{% if item.gain_or_loss == '+' %}purchased{% elif item.gain_or_loss == '-' %}sold{% else %}{% endif %}"
+                        data-price="{{ item.price | parse_price }}">
+                    <td><img alt="Item" src="{{ item.image_url }}" /></td>
+                    <td>{{ item.item_name }}</td>
+                    <td>{{ item.game_name }}</td>
+                    <td>{{ item.listed_date | format_date }}</td>
+                    <td class="price">
+                        {% if item.gain_or_loss == '+' %}
+                            <span class="text-danger">-{{ item.price | normalize_price }}</span>
+                        {% elif item.gain_or_loss == '-' %}
+                            <span class="text-success">+{{ item.price | normalize_price }}</span>
+                        {% endif %}
+                    </td>
+                    {% if item.gain_or_loss == '+' %}
+                        <td><span class="badge bg-danger fs-6">Purchased</span></td>
+                    {% elif item.gain_or_loss == '-' %}
+                        <td><span class="badge bg-success fs-6">Sold</span></td>
+                    {% endif %}
+                </tr>
             {% endfor %}
-          </tbody>
+            </tbody>
         </table>
-      </div>
     </div>
+</div>
 
-    <!-- CDN JS-->
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5/dist/js/bootstrap.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/jquery@3/dist/jquery.min.js"></script>
+<!-- CDN JS-->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5/dist/js/bootstrap.bundle.min.js"></script>
 
-    <!-- JQuery Plugins-->
-    <script>
-      (function ($) {
-        "use strict";
+<script>
+    document.getElementById('btn-clear-filters').addEventListener('click', () => {
+        document.getElementById('filter-item').value = '';
+        document.getElementById('filter-game').value = '';
+        document.getElementById('filter-transaction').value = '';
+        document.getElementById('filter-price-min').value = '';
+        document.getElementById('filter-price-max').value = '';
+        applyFilters();
+    });
 
-        function delay(callback, ms) {
-          var timer = 0;
-          return function () {
-            var context = this,
-              args = arguments;
-            clearTimeout(timer);
-            timer = setTimeout(function () {
-              callback.apply(context, args);
-            }, ms || 0);
-          };
-        }
+    document.getElementById('filter-item').addEventListener('input', applyFilters);
+    document.getElementById('filter-game').addEventListener('input', applyFilters);
+    document.getElementById('filter-transaction').addEventListener('change', applyFilters);
+    document.getElementById('filter-price-min').addEventListener('input', applyFilters);
+    document.getElementById('filter-price-max').addEventListener('input', applyFilters);
 
-        function setUpOptions(options) {
-          const placeholderConst = "Enter a search term";
-          var defaultOptions = options || {
-            placeholder: placeholderConst,
-            filterTrClass: "",
-          };
-          if (defaultOptions.placeholder === undefined)
-            defaultOptions.placeholder = placeholderConst;
-          if (defaultOptions.filterTrClass === undefined) defaultOptions.filterTrClass = "";
-          return defaultOptions;
-        }
-        var searchTable = function (table, options) {
-          this.setUp = function () {
-            var defaultOptions = setUpOptions(options);
-            var inputSearch = $("<input>", {
-              type: "text",
-              class: "form-control shadow-none",
-              placeholder: defaultOptions.placeholder,
-            });
-            var spanSearch = $("<span>", {
-              class: "add-on",
-            }).append(
-              $("<i>", {
-                class: "icon icon-search",
-              })
-            );
-            var divSearch = $("<div>", {
-              class: "row-fluid input-append",
-            });
-            divSearch.append(inputSearch).append(spanSearch);
-            $(table).before(divSearch);
-            var $rows = $(table).find("tbody tr" + defaultOptions.filterTrClass);
+    function applyFilters() {
+        const itemFilter = document.getElementById('filter-item').value.toLowerCase().trim();
+        const gameFilter = document.getElementById('filter-game').value.toLowerCase().trim();
+        const transactionFilter = document.getElementById('filter-transaction').value;
+        const priceMinEl = document.getElementById('filter-price-min');
+        const priceMaxEl = document.getElementById('filter-price-max');
+        const priceMin = priceMinEl.value === '' ? null : Number.parseFloat(priceMinEl.value);
+        const priceMax = priceMaxEl.value === '' ? null : Number.parseFloat(priceMaxEl.value);
 
-            inputSearch.keyup(
-              delay(function (e) {
-                if (typeof defaultOptions.before === "function") defaultOptions.before();
-                var val = "^(?=.*" + $.trim($(this).val()).split(/\s+/).join(")(?=.*") + ").*$",
-                  reg = RegExp(val, "i"),
-                  text;
-                $rows
-                  .show()
-                  .filter(function () {
-                    text = $(this).text().replace(/\s+/g, " ");
-                    return !reg.test(text);
-                  })
-                  .hide();
-              }, 500)
-            );
-          };
-        };
-        $.fn.searchTable = function (options) {
-          var st = new searchTable(this, options);
-          st.setUp();
-        };
-      })(jQuery);
-    </script>
+        document.querySelectorAll('#steam-table tbody tr').forEach(row => {
+            const item = row.dataset.item;
+            const game = row.dataset.game;
+            const transaction = row.dataset.transaction;
+            const price = Number.parseFloat(row.dataset.price);
 
-    <!-- Core theme JS-->
-    <script>
-      $("#steam-table").searchTable({
-        placeholder: "Search entire table...",
-      });
-    </script>
-  </body>
+            let visible = true;
+
+            if (itemFilter && !item.includes(itemFilter)) visible = false;
+            if (gameFilter && !game.includes(gameFilter)) visible = false;
+            if (transactionFilter && transaction !== transactionFilter) visible = false;
+            if (priceMin !== null && price < priceMin) visible = false;
+            if (priceMax !== null && price > priceMax) visible = false;
+
+            row.style.display = visible ? '' : 'none';
+        });
+    }
+</script>
+</body>
 </html>

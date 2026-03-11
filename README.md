@@ -2,14 +2,20 @@
 
 <!-- PROJECT SHIELDS -->
 
-<!--
-[![PyPI](https://img.shields.io/pypi/v/steam-market-history?style=flat-square)](https://pypi.org/project/steam-market-history/)
-[![GitHub pipeline status](https://img.shields.io/github/actions/workflow/status/fabieu/steam-market-history/build.yml?style=flat-square)](https://github.com/fabieu/steam-market-history/actions) 
--->
-[![PyPI - Python Version](https://img.shields.io/pypi/pyversions/steam-market-history?style=flat-square)](https://pypi.org/project/steam-market-history/)
-[![GitHub issues](https://img.shields.io/github/issues-raw/fabieu/steam-market-history?style=flat-square)](https://github.com/fabieu/steam-market-history/issues)
-[![GitHub merge requests](https://img.shields.io/github/issues-pr/fabieu/steam-market-history?style=flat-square)](https://github.com/fabieu/steam-market-history/pulls)
-[![GitHub](https://img.shields.io/github/license/fabieu/steam-market-history?style=flat-square)](https://github.com/fabieu/steam-market-history/blob/main/LICENSE)
+[![GitHub Release](https://img.shields.io/github/v/release/fabieu/steam-market-history)](https://github.com/fabieu/steam-market-history/releases/latest)
+[![GitHub Issues](https://img.shields.io/github/issues/fabieu/steam-market-history)](https://github.com/fabieu/steam-market-history/issues)
+[![GitHub Pull Requests](https://img.shields.io/github/issues-pr/fabieu/steam-market-history)](https://github.com/fabieu/steam-market-history/pulls)
+[![License](https://img.shields.io/github/license/fabieu/steam-market-history)](https://github.com/fabieu/steam-market-history/blob/main/LICENSE)
+
+[![PyPI Version](https://img.shields.io/pypi/v/steam-market-history)](https://pypi.org/project/steam-market-history/)
+[![Python Versions](https://img.shields.io/pypi/pyversions/steam-market-history)](https://pypi.org/project/steam-market-history/)
+
+[![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=fabieu_steam-market-history&metric=alert_status)](https://sonarcloud.io/summary/overall?id=fabieu_steam-market-history)
+[![Security Rating](https://sonarcloud.io/api/project_badges/measure?project=fabieu_steam-market-history&metric=security_rating)](https://sonarcloud.io/summary/overall?id=fabieu_steam-market-history)
+[![Reliability Rating](https://sonarcloud.io/api/project_badges/measure?project=fabieu_steam-market-history&metric=reliability_rating)](https://sonarcloud.io/summary/overall?id=fabieu_steam-market-history)
+[![Maintainability Rating](https://sonarcloud.io/api/project_badges/measure?project=fabieu_steam-market-history&metric=sqale_rating)](https://sonarcloud.io/summary/overall?id=fabieu_steam-market-history)
+[![Vulnerabilities](https://sonarcloud.io/api/project_badges/measure?project=fabieu_steam-market-history&metric=vulnerabilities)](https://sonarcloud.io/summary/overall?id=fabieu_steam-market-history)
+[![Technical Debt](https://sonarcloud.io/api/project_badges/measure?project=fabieu_steam-market-history&metric=sqale_index)](https://sonarcloud.io/summary/overall?id=fabieu_steam-market-history)
 
 <!-- PROJECT LOGO -->
 <br />
@@ -43,7 +49,7 @@ History with all transaction (sales/purchases) in a CSV or HTML file.
 
 ## Demo
 
-<img src="https://raw.githubusercontent.com/fabieu/steam-market-history/main/docs/demo.gif">
+<img src="https://raw.githubusercontent.com/fabieu/steam-market-history/main/docs/screenshot-html-export.png" alt="HTML Export Screenshot">
 
 <p align="right">(<a href="#top">back to top</a>)</p>
 
