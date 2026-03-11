@@ -2,6 +2,8 @@ import csv
 import json
 from uuid import UUID
 
+import pytest
+
 from steam_market_history.models import MarketTransaction
 from steam_market_history.modules import exporter
 
@@ -48,18 +50,33 @@ def test_format_date_handles_valid_invalid_and_empty() -> None:
     assert exporter._format_date(None) == ""
 
 
-def test_extract_currency_detects_prefix_and_suffix() -> None:
-    suffix = [
-        MarketTransaction("Game", "Item", "17 Jan", "1.00€", "+", None),
-    ]
-    prefix = [
-        MarketTransaction("Game", "Item", "17 Jan", "$1.00", "+", None),
-    ]
-    unknown = [MarketTransaction("Game", "Item", "17 Jan", "1234", "+", None)]
+@pytest.mark.parametrize("price,expected", [
+    ("1.00€",        ("€",   False)),
+    ("1,234.56€",    ("€",   False)),
+    ("$1.00",        ("$",   True)),
+    ("$1,234.56",    ("$",   True)),
+    ("1 234,56 EUR", ("EUR", False)),
+    ("1,234.56 USD", ("USD", False)),
+    ("EUR 1,234.56", ("EUR", True)),
+    ("USD 1.00",     ("USD", True)),
+    ("1234",         ("",    False)),
+])
+def test_extract_currency_detects_symbol_and_position(price, expected) -> None:
+    transactions = [MarketTransaction("Game", "Item", "17 Jan", price, "+", None)]
+    assert exporter._extract_currency(transactions) == expected
 
-    assert exporter._extract_currency(suffix) == ("€", False)
-    assert exporter._extract_currency(prefix) == ("$", True)
-    assert exporter._extract_currency(unknown) == ("", False)
+
+def test_extract_currency_skips_none_prices() -> None:
+    transactions = [
+        MarketTransaction("Game", "Item", "17 Jan", None, "+", None),
+        MarketTransaction("Game", "Item", "18 Jan", "1.00€", "+", None),
+    ]
+    assert exporter._extract_currency(transactions) == ("€", False)
+
+
+def test_extract_currency_returns_empty_for_all_none_prices() -> None:
+    transactions = [MarketTransaction("Game", "Item", "17 Jan", None, "+", None)]
+    assert exporter._extract_currency(transactions) == ("", False)
 
 
 def test_format_currency_for_prefix_and_suffix() -> None:

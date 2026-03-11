@@ -142,11 +142,11 @@
             </thead>
             <tbody>
             {% for item in transactions %}
-                <tr data-item="{{ item.item_name | lower }}"
-                        data-game="{{ item.game_name | lower }}"
-                        data-transaction="{{ 'purchased' if item.gain_or_loss == '+' else 'sold' }}"
+                <tr data-item="{{ (item.item_name or '') | lower }}"
+                        data-game="{{ (item.game_name or '') | lower }}"
+                        data-transaction="{% if item.gain_or_loss == '+' %}purchased{% elif item.gain_or_loss == '-' %}sold{% else %}{% endif %}"
                         data-price="{{ item.price | parse_price }}">
-                    <td><img src="{{ item.image_url }}" alt="Item Image" /></td>
+                    <td><img alt="Item" src="{{ item.image_url }}" /></td>
                     <td>{{ item.item_name }}</td>
                     <td>{{ item.game_name }}</td>
                     <td>{{ item.listed_date | format_date }}</td>

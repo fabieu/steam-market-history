@@ -43,7 +43,7 @@ History with all transaction (sales/purchases) in a CSV or HTML file.
 
 ## Demo
 
-<img src="https://raw.githubusercontent.com/fabieu/steam-market-history/main/docs/demo.gif">
+<img src="https://raw.githubusercontent.com/fabieu/steam-market-history/main/docs/screenshot-html-export.png" alt="HTML Export Screenshot">
 
 <p align="right">(<a href="#top">back to top</a>)</p>
 

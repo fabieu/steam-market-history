@@ -95,13 +95,20 @@ def _format_date(date: str | None) -> str:
 
 def _extract_currency(transactions: list[MarketTransaction]) -> tuple[str, bool]:
     """Returns (symbol, is_prefix). is_prefix is True when the symbol appears before the digits."""
-    for t in transactions:
-        if t.price:
-            match = re.search(r'[^\d\s,.\-]', t.price)
-            if match:
-                symbol = match.group()
-                is_prefix = t.price.strip().startswith(symbol)
-                return symbol, is_prefix
+    for transaction in transactions:
+        if not transaction.price:
+            continue
+
+        price = transaction.price.strip()
+
+        prefix_match = re.match(r'^([^\d\s,.]+)', price)
+        if prefix_match:
+            return prefix_match.group(1), True
+
+        suffix_match = re.search(r'([^\d\s,.]+)$', price)
+        if suffix_match:
+            return suffix_match.group(1), False
+
     return '', False
 
 
