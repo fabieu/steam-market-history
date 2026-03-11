@@ -28,16 +28,54 @@ def _normalize_price(price: str | None) -> str:
 
 
 def _parse_price(price: str | None) -> float:
-    """Jinja filter. Strips currency symbols and normalises decimal separators, returning a float."""
+    """Jinja filter. Strips currency symbols and normalizes locale-style separators to float."""
     if not price:
         return 0.0
 
-    cleaned = _normalize_price(price).strip()
-    cleaned = re.sub(r'[^\d,.]', '', cleaned)
-    cleaned = cleaned.replace(',', '.')
+    normalized_price_text = _normalize_price(price).strip()
+
+    # Keep only digits, separator candidates, and whitespace; strip spaces used as thousands separators.
+    numeric_text = re.sub(r'[^\d,.\s]', '', normalized_price_text)
+    numeric_text = re.sub(r'\s+', '', numeric_text)
+    if not numeric_text:
+        return 0.0
+
+    last_comma_index = numeric_text.rfind(',')
+    last_dot_index = numeric_text.rfind('.')
+
+    if last_comma_index != -1 and last_dot_index != -1:
+        # When both separators exist, the rightmost separator is the decimal marker.
+        decimal_separator = ',' if last_comma_index > last_dot_index else '.'
+        thousands_separator = '.' if decimal_separator == ',' else ','
+        numeric_text = numeric_text.replace(thousands_separator, '')
+        numeric_text = numeric_text.replace(decimal_separator, '.')
+    elif ',' in numeric_text:
+        comma_chunks = numeric_text.split(',')
+        trailing_chunk = comma_chunks[-1]
+        # Infer whether comma is decimal or thousands separator from group shape.
+        if len(comma_chunks) > 2 and len(trailing_chunk) == 3:
+            numeric_text = ''.join(comma_chunks)
+        elif len(trailing_chunk) in (1, 2):
+            numeric_text = ''.join(comma_chunks[:-1]) + '.' + trailing_chunk
+        elif len(trailing_chunk) == 3:
+            numeric_text = ''.join(comma_chunks)
+        else:
+            numeric_text = ''.join(comma_chunks[:-1]) + '.' + trailing_chunk
+    elif '.' in numeric_text:
+        dot_chunks = numeric_text.split('.')
+        trailing_chunk = dot_chunks[-1]
+        # Same heuristic for dot-only values.
+        if len(dot_chunks) > 2 and len(trailing_chunk) == 3:
+            numeric_text = ''.join(dot_chunks)
+        elif len(trailing_chunk) in (1, 2):
+            numeric_text = ''.join(dot_chunks[:-1]) + '.' + trailing_chunk
+        elif len(trailing_chunk) == 3:
+            numeric_text = ''.join(dot_chunks)
+        else:
+            numeric_text = ''.join(dot_chunks[:-1]) + '.' + trailing_chunk
 
     try:
-        return float(cleaned)
+        return float(numeric_text)
     except ValueError:
         return 0.0
 
