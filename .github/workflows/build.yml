@@ -8,15 +8,13 @@ concurrency:
   cancel-in-progress: true
 
 env:
-  POETRY_VERSION: 2.2.1
-  PYPI_TOKEN: "${{ secrets.PYPI_TOKEN }}"
+  PYTHON_VERSION: "3.14"
+  POETRY_VERSION: "2.3.2"
 
 jobs:
   set-version:
     name: Set version info
     runs-on: ubuntu-latest
-    container:
-      image: python:3.14-slim
     timeout-minutes: 5
     permissions:
       contents: read
@@ -26,8 +24,16 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v6
 
+      - name: Set up Python
+        uses: actions/setup-python@v6
+        with:
+          python-version: ${{ env.PYTHON_VERSION }}
+
       - name: Install poetry
-        run: pip install poetry==$POETRY_VERSION
+        run: pip install poetry==${{ env.POETRY_VERSION }}
+
+      - name: Configure poetry
+        run: poetry config virtualenvs.create false
 
       - name: Save version to output
         id: version
@@ -38,24 +44,86 @@ jobs:
       - name: Display version
         run: echo "Version ${{ steps.version.outputs.version }}"
 
-  publish:
-    name: Publish package to PYPI
+  test:
+    name: Run tests
     runs-on: ubuntu-latest
-    container:
-      image: python:3.14-slim
+    timeout-minutes: 10
+    permissions:
+      contents: read
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v6
+
+      - name: Set up Python
+        uses: actions/setup-python@v6
+        with:
+          python-version: ${{ env.PYTHON_VERSION }}
+
+      - name: Install poetry
+        run: pip install poetry==${{ env.POETRY_VERSION }}
+
+      - name: Configure poetry
+        run: poetry config virtualenvs.create false
+
+      - name: Install project dependencies
+        run: poetry install --no-interaction
+
+      - name: Run pytest
+        run: poetry run pytest
+
+  build:
+    name: Build package
+    runs-on: ubuntu-latest
+    needs:
+      - test
+    permissions:
+      contents: read
     timeout-minutes: 15
     steps:
       - name: Checkout
         uses: actions/checkout@v6
 
+      - name: Set up Python
+        uses: actions/setup-python@v6
+        with:
+          python-version: ${{ env.PYTHON_VERSION }}
+
       - name: Install poetry
-        run: pip install poetry==$POETRY_VERSION
+        run: pip install poetry==${{ env.POETRY_VERSION }}
+
+      - name: Configure poetry
+        run: poetry config virtualenvs.create false
 
       - name: Install project dependencies
-        run: poetry install
+        run: poetry install --no-interaction
 
-      - name: Public package to PYPI via Poetry
-        run: poetry publish --build --no-interaction --username __token__ --password $PYPI_TOKEN
+      - name: Build
+        run: poetry build
+
+      - name: Upload dist
+        uses: actions/upload-artifact@v7
+        with:
+          name: dist
+          path: dist/
+
+  publish:
+    name: Publish package
+    runs-on: ubuntu-latest
+    needs:
+      - build
+    permissions:
+      contents: read
+      id-token: write
+    timeout-minutes: 15
+    steps:
+      - name: Download dist
+        uses: actions/download-artifact@v8
+        with:
+          name: dist
+          path: dist/
+
+      - name: Publish package distributions to PyPI
+        uses: pypa/gh-action-pypi-publish@release/v1
 
   create-release:
     name: Create release
