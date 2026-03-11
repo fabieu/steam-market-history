@@ -85,7 +85,8 @@ def _format_date(date: str | None) -> str:
     if not date:
         return ''
     try:
-        dt = datetime.strptime(date.strip(), '%d %b')
+        dt_fmt = '%d %b %Y'  # Year is required for strptime, but we can ignore it since we're only formatting day and month.
+        dt = datetime.strptime(f"{date.strip()} 2000", dt_fmt)  # Default to a leap year to allow parsing of Feb 29
         day = dt.day
         suffix = 'th' if 11 <= day % 100 <= 13 else ['th', 'st', 'nd', 'rd', 'th'][min(day % 10, 4)]
         return f"{day}{suffix} {dt.strftime('%B')}"
