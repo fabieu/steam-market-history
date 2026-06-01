@@ -12,8 +12,8 @@ keywords = ["steam", "cli", "market", "history", "export"]
 dependencies = [
     "beautifulsoup4>=4.14.3,<5.0.0",
     "Jinja2>=3.1.6,<4.0.0",
-    "typer>=0.25.1,<1.0.0",
-    "steam-next>=2.1.0,<3.0.0",
+    "typer>=0.26.5,<1.0.0",
+    "steam-next>=2.2.0,<3.0.0",
 ]
 
 [dependency-groups]
