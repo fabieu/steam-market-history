@@ -66,6 +66,8 @@ jobs:
         run: poetry config virtualenvs.create false
 
       - name: Install project dependencies
+        env:
+          POETRY_INSTALLER_ONLY_BINARY: ":all:"
         run: poetry install --no-interaction
 
       - name: Run pytest
@@ -95,6 +97,8 @@ jobs:
         run: poetry config virtualenvs.create false
 
       - name: Install project dependencies
+        env:
+          POETRY_INSTALLER_ONLY_BINARY: ":all:"
         run: poetry install --no-interaction
 
       - name: Build
