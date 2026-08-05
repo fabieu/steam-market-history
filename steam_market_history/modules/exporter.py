@@ -1,6 +1,9 @@
 import csv
 import json
+import os
 import re
+import subprocess
+import sys
 import uuid
 from dataclasses import asdict, fields
 from datetime import datetime
@@ -8,7 +11,7 @@ from pathlib import Path
 
 from jinja2 import Environment, FileSystemLoader, select_autoescape
 
-from steam_market_history.console import CHECKMARK, console
+from steam_market_history.console import CHECKMARK, console, err_console, WARNING_STYLE
 from steam_market_history.models import MarketTransaction
 
 # Global variables
@@ -125,7 +128,20 @@ def _to_normalized_dict(t: MarketTransaction) -> dict:
     return d
 
 
-def to_csv(market_transactions: list[MarketTransaction], base_path: Path) -> None:
+def open_in_default_program(path: Path) -> None:
+    """Open a file with the program the OS has associated with its type."""
+    try:
+        if sys.platform == "win32":
+            os.startfile(path)
+        elif sys.platform == "darwin":
+            subprocess.run(["open", path], check=True)
+        else:
+            subprocess.run(["xdg-open", path], check=True)
+    except (OSError, subprocess.CalledProcessError) as e:
+        err_console.print(f"Warning: could not open {path} ({e})", style=WARNING_STYLE)
+
+
+def to_csv(market_transactions: list[MarketTransaction], base_path: Path) -> Path:
     output_path = _build_output_path(base_path, "csv")
 
     with open(output_path, 'w', newline='', encoding="utf-8") as file:
@@ -135,8 +151,10 @@ def to_csv(market_transactions: list[MarketTransaction], base_path: Path) -> Non
 
     console.print(f"{CHECKMARK} CSV exported: [bold]{output_path}[/bold]", highlight=False)
 
+    return output_path
 
-def to_html(market_transactions: list[MarketTransaction], base_path: Path, data_date: datetime | None = None) -> None:
+
+def to_html(market_transactions: list[MarketTransaction], base_path: Path, data_date: datetime | None = None) -> Path:
     output_path = _build_output_path(base_path, "html")
 
     env = Environment(
@@ -166,8 +184,10 @@ def to_html(market_transactions: list[MarketTransaction], base_path: Path, data_
 
     console.print(f"{CHECKMARK} HTML exported: [bold]{output_path}[/bold]", highlight=False)
 
+    return output_path
 
-def to_json(market_transactions: list[MarketTransaction], base_path: Path) -> None:
+
+def to_json(market_transactions: list[MarketTransaction], base_path: Path) -> Path:
     output_path = _build_output_path(base_path, "json")
 
     wrapper = {
@@ -178,3 +198,5 @@ def to_json(market_transactions: list[MarketTransaction], base_path: Path) -> No
         file.write(json.dumps(wrapper, indent=4))
 
     console.print(f"{CHECKMARK} JSON exported: [bold]{output_path}[/bold]", highlight=False)
+
+    return output_path

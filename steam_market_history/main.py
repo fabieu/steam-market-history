@@ -61,7 +61,9 @@ def export(
         base_path: Path = typer.Option(Path.cwd() / "export", "--path",
                                        help="Directory to write exported files into"),
         cache: bool = typer.Option(False, "--cache",
-                                   help="Reuse previously cached transactions instead of fetching from Steam")
+                                   help="Reuse previously cached transactions instead of fetching from Steam"),
+        open_exports: bool = typer.Option(False, "--open",
+                                          help="Open the exported files in the default program")
 ):
     """
     Fetch your Steam market history and export it to one or more file formats.
@@ -91,14 +93,20 @@ def export(
     if export_csv or export_html or export_json:
         base_path.mkdir(exist_ok=True, parents=True)  # Ensure the base path exists
 
+    export_paths = []
+
     if export_csv:
-        exporter.to_csv(market_transactions, base_path)
+        export_paths.append(exporter.to_csv(market_transactions, base_path))
 
     if export_html:
-        exporter.to_html(market_transactions, base_path, data_date)
+        export_paths.append(exporter.to_html(market_transactions, base_path, data_date))
 
     if export_json:
-        exporter.to_json(market_transactions, base_path)
+        export_paths.append(exporter.to_json(market_transactions, base_path))
+
+    if open_exports:
+        for export_path in export_paths:
+            exporter.open_in_default_program(export_path)
 
 
 if __name__ == "__main__":
