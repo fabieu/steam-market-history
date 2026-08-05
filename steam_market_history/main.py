@@ -19,6 +19,7 @@ CACHE_PATH_TRANSACTIONS = CACHE_DIR / "steam_market_transactions.json"
 
 def _load_cached_transactions() -> list[MarketTransaction] | None:
     if not CACHE_PATH_TRANSACTIONS.exists():
+        err_console.print("Warning: no cache file found, fetching from Steam.", style=WARNING_STYLE)
         return None
 
     try:
