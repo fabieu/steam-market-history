@@ -1,5 +1,6 @@
 import json
 from dataclasses import asdict
+from datetime import datetime
 from pathlib import Path
 
 import typer
@@ -74,9 +75,12 @@ def export(
         steam_session = steam.login_cli()
 
         market_transactions = steam.fetch_market_history(steam_session)
+        data_date = datetime.now()
 
         if cache:
             _save_cached_transactions(market_transactions)
+    else:
+        data_date = datetime.fromtimestamp(CACHE_PATH_TRANSACTIONS.stat().st_mtime)
 
     if export_csv or export_html or export_json:
         base_path.mkdir(exist_ok=True, parents=True)  # Ensure the base path exists
@@ -85,7 +89,7 @@ def export(
         exporter.to_csv(market_transactions, base_path)
 
     if export_html:
-        exporter.to_html(market_transactions, base_path)
+        exporter.to_html(market_transactions, base_path, data_date)
 
     if export_json:
         exporter.to_json(market_transactions, base_path)

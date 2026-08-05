@@ -136,7 +136,7 @@ def to_csv(market_transactions: list[MarketTransaction], base_path: Path) -> Non
     console.print(f"{CHECKMARK} CSV exported: [bold]{output_path}[/bold]", highlight=False)
 
 
-def to_html(market_transactions: list[MarketTransaction], base_path: Path) -> None:
+def to_html(market_transactions: list[MarketTransaction], base_path: Path, data_date: datetime | None = None) -> None:
     output_path = _build_output_path(base_path, "html")
 
     env = Environment(
@@ -149,7 +149,7 @@ def to_html(market_transactions: list[MarketTransaction], base_path: Path) -> No
     template = env.get_template("index.html")
 
     with open(output_path, 'w', encoding="utf-8") as rendered_file:
-        current_date = datetime.now().strftime("%d.%m.%Y %H:%M")
+        formatted_data_date = (data_date or datetime.now()).strftime("%d.%m.%Y %H:%M")
         currency, is_prefix = _extract_currency(market_transactions)
         total_purchases = round(sum(_parse_price(t.price) for t in market_transactions if t.gain_or_loss == '+'), 2)
         total_sales = round(sum(_parse_price(t.price) for t in market_transactions if t.gain_or_loss == '-'), 2)
@@ -162,7 +162,7 @@ def to_html(market_transactions: list[MarketTransaction], base_path: Path) -> No
             "net": f"{net_sign}{_format_currency(abs(net), currency, is_prefix)}",
         }
         rendered_file.write(template.render(
-            summary=summary, transactions=market_transactions, current_date=current_date))
+            summary=summary, transactions=market_transactions, data_date=formatted_data_date))
 
     console.print(f"{CHECKMARK} HTML exported: [bold]{output_path}[/bold]", highlight=False)
 
