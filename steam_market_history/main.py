@@ -4,6 +4,7 @@ from datetime import datetime
 from pathlib import Path
 
 import typer
+from platformdirs import user_cache_path
 
 from steam_market_history import __version__, __metadata__
 from steam_market_history.console import console, err_console, ERROR_STYLE, WARNING_STYLE
@@ -12,7 +13,7 @@ from steam_market_history.modules import steam, exporter
 
 app = typer.Typer(help=f"steam-market-history v{__version__}")
 
-CACHE_DIR = Path(".cache")
+CACHE_DIR = user_cache_path("steam-market-history", appauthor=False)
 CACHE_PATH_TRANSACTIONS = CACHE_DIR / "steam_market_transactions.json"
 
 
@@ -31,7 +32,7 @@ def _load_cached_transactions() -> list[MarketTransaction] | None:
 
 
 def _save_cached_transactions(market_transactions: list[MarketTransaction]) -> None:
-    CACHE_DIR.mkdir(exist_ok=True)  # Ensure the cache directory exists
+    CACHE_DIR.mkdir(exist_ok=True, parents=True)  # Ensure the cache directory exists
 
     with open(CACHE_PATH_TRANSACTIONS, 'w', encoding="utf-8") as f:
         json.dump([asdict(t) for t in market_transactions], f, indent=4)
@@ -50,11 +51,16 @@ def version():
 
 @app.command()
 def export(
-        export_csv: bool = typer.Option(False, "--csv", help="Export market history as a CSV file"),
-        export_html: bool = typer.Option(False, "--html", help="Export market history as an interactive HTML file"),
-        export_json: bool = typer.Option(False, "--json", help="Export market history as a JSON file"),
-        base_path: Path = typer.Option(Path.cwd() / "export", "--path", help="Directory to write exported files into"),
-        cache: bool = typer.Option(False, "--cache", help="Cache fetched transactions to disk and reuse on subsequent runs")
+        export_csv: bool = typer.Option(False, "--csv",
+                                        help="Export market history as a CSV file"),
+        export_html: bool = typer.Option(False, "--html",
+                                         help="Export market history as an interactive HTML file"),
+        export_json: bool = typer.Option(False, "--json",
+                                         help="Export market history as a JSON file"),
+        base_path: Path = typer.Option(Path.cwd() / "export", "--path",
+                                       help="Directory to write exported files into"),
+        cache: bool = typer.Option(False, "--cache",
+                                   help="Reuse previously cached transactions instead of fetching from Steam")
 ):
     """
     Fetch your Steam market history and export it to one or more file formats.
@@ -77,8 +83,7 @@ def export(
         market_transactions = steam.fetch_market_history(steam_session)
         data_date = datetime.now()
 
-        if cache:
-            _save_cached_transactions(market_transactions)
+        _save_cached_transactions(market_transactions)
     else:
         data_date = datetime.fromtimestamp(CACHE_PATH_TRANSACTIONS.stat().st_mtime)
 

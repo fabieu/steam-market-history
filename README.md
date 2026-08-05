@@ -109,7 +109,12 @@ Options:
 - `--html` - Export market history as an interactive HTML file
 - `--json` - Export market history as a JSON file
 - `--path` - Directory to write exported files into (default: `./export`)
-- `--cache` - Cache fetched transactions to disk and reuse on subsequent runs (default: disabled)
+- `--cache` - Reuse previously cached transactions instead of fetching from Steam (default: disabled)
+
+Fetched transactions are always written to `steam_market_transactions.json` in the per-user cache directory
+(`%LOCALAPPDATA%\steam-market-history\Cache` on Windows, `~/.cache/steam-market-history` on Linux,
+`~/Library/Caches/steam-market-history` on macOS). Pass `--cache` to reuse that copy instead of fetching from Steam
+again; run without `--cache` to fetch fresh data and refresh the cached copy.
 
 Exported filenames include a unique ID (e.g. `steam-market-history-3f2e1a....csv`) to avoid overwriting previous
 exports.
